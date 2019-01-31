@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	th:replace="~{layout/admin_main :: layout( _ , _ , ~{::div#breadcrumb} , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div id="breadcrumb">
+			<a href="javascript: void(0);"class="breadcrumb">Produto</a>
+		</div>
+		
+		<div id="body">
+			<div class="container">
+				<ul class="tabs" style="margin-top: 15px;">
+					<li class="tab">
+						<a href="#rowProdutos" class="active">Produtos</a>
+					</li>
+					<li class="tab">
+						<a href="#rowCategoriasProduto">Categorias de Produto</a>
+					</li>
+				</ul>
+				<div class="row" id="rowProdutos">
+					<div class="col s12">
+						<div class="card horizontal">
+							<div class="card-image">
+								<img src="/mi-static/images/amuse_delineador.png" style="height: 150px;">
+							</div>
+							<div class="card-stacked">
+								<div class="card-content">
+									<h5>Nome do Produto</h5>
+									<p>Aqui vai uma pequena descrição do Produto XPTO, falando de suas caracteristicas.</p>
+								</div>
+<!-- 								<div class="card-action"> -->
+<!-- 									<a href="#">This is a link</a> -->
+<!-- 								</div> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row" id="rowCategoriasProduto">
+					<div class="col s12">
+						<div class="card horizontal">
+							<div class="card-image">
+								<img src="/mi-static/images/amuse_delineador.png" style="height: 150px;">
+							</div>
+							<div class="card-stacked">
+								<div class="card-content">
+									<h5>Nome da Categoria de Produto</h5>
+									<p>Aqui vai uma pequena descrição da Categoria de Produto XPTO, falando de suas características.</p>
+								</div>
+<!-- 								<div class="card-action"> -->
+<!-- 									<a href="#">This is a link</a> -->
+<!-- 								</div> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div th:if="${#lists.isEmpty(produtos)}">
+					<div class="col s12">
+						<span class="container">Não existem produtos cadastrados</span>
+					</div>
+				</div>
+			</div>
+			<div class="fixed-action-btn">
+				<a class="btn-floating btn-large purple lighten-3" th:href="@{/produto/novo}">
+					<i class="large material-icons">add</i>
+				</a>
+			</div>
+		</div>
+	</body>
+</html>

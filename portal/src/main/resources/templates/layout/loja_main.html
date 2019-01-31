@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html
+	lang="pt"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:fragment="layout(title, style, body, script)">
+
+	<head>
+		<meta charset="UTF-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+		<title th:replace="${title}">Maquiagem Importada</title>
+		
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+		<link href="/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+		
+		<link rel="stylesheet" th:replace="${style}"/>
+		
+		<link rel="shortcut icon" href="/images/favicon.png" />
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		
+	</head>
+	
+	<body>
+
+		<div th:replace="layout/fragments/loja_navbar :: navbar"></div>
+		
+		<!-- ================= CONTEÚDO - INÍCIO ================= -->
+		
+		<div th:replace="${body}">
+		
+		</div>
+		
+		<!-- ================= CONTEÚDO - FIM ================= -->
+
+		<div th:replace="layout/fragments/loja_footer :: footer"></div>
+	
+		<!--  Scripts-->
+		<script src="/js/jquery-3.3.1.min.js"></script>
+		<script src="/js/materialize.js"></script>
+		<script src="/js/init.js"></script>
+		
+		<script th:replace="${script}"></script>
+		
+	</body>
+
+</html>

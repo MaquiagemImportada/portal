@@ -1,0 +1,65 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+.icon-block {
+  padding: 0 15px;
+}
+.icon-block .material-icons {
+	font-size: inherit;
+}
+#img_logo{
+	position: inherit;
+	width: 100%;
+}
+/*footer{
+	position: absolute;
+	bottom: 0;
+}*/
+div.user-view{
+	height: 64px;
+}
+/*nav{
+	background: #ffffff url("/mi-static/images/topbar01_1920_64.png") no-repeat center top;
+}*/
+
+
+/* ======== INPUTS ======== */
+
+/* label color */
+.input-field label {
+	color: #888a85;
+}
+/* label focus color */
+.input-field input[type=text]:focus + label {
+	color: #ad7fa8;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus {
+	border-bottom: 1px solid #888a85;
+	box-shadow: 0 1px 0 0 #888a85;
+}
+/* valid color */
+.input-field input[type=text].valid {
+	border-bottom: 1px solid #888a85;
+	box-shadow: 0 1px 0 0 #888a85;
+}
+/* invalid color */
+.input-field input[type=text].invalid {
+	border-bottom: 1px solid #ef2929;
+	box-shadow: 0 1px 0 0 #ef2929;
+}
+/* icon prefix focus color */
+.input-field .prefix.active {
+	color: #000;
+}
+
+/* ======== UTILIDADES ======== */
+
+label.required{
+	content: "*";
+}
