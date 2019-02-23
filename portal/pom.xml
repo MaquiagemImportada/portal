@@ -19,6 +19,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<jmagick.version>6.6.9</jmagick.version>
+		<thumbnailator.version>0.4.8</thumbnailator.version>
 	</properties>
 
 	<dependencies>
@@ -92,11 +93,19 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
+		<!-- dependency>
 			<groupId>jmagick</groupId>
 			<artifactId>jmagick</artifactId>
 			<version>${jmagick.version}</version>
-			<scope>provided</scope>
+			<scope>system</scope>
+			<systemPath>D:\\Desenvolvimento\\.m2\\repository\\jmagick\\jmagick\\6.6.9\\jmagick-6.6.9.jar</systemPath>
+		</dependency-->
+		
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>${thumbnailator.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>

@@ -13,9 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.maquiagemimportada.portal.util.Constantes;
-import magick.ImageInfo;
-import magick.MagickException;
-import magick.MagickImage;
+import br.com.maquiagemimportada.portal.util.RenameImage;
+import net.coobird.thumbnailator.Thumbnails;
 
 public class ImagemStorageLocal implements ImagemStorage {
 
@@ -37,8 +36,7 @@ public class ImagemStorageLocal implements ImagemStorage {
 	private void criarPastas() {
 		try {
 			Files.createDirectories(this.diretorioImagens);
-			diretorioImagensTemporarias = getDefault().getPath(diretorioImagens.toString(), Constantes.MI_PASTA_IMAGENS_TEMPORARIAS);
-			Files.createDirectories(this.diretorioImagensTemporarias);
+			Files.createDirectories(getDiretorioImagensTemporarias());
 			
 			if(logger.isDebugEnabled()) {
 				logger.debug("Pastas de imagens criadas com sucesso: ");
@@ -63,24 +61,25 @@ public class ImagemStorageLocal implements ImagemStorage {
 	}
 	
 	private String salvar(MultipartFile[] files, Path path) throws IllegalStateException, IOException {
-		StringBuilder nomesArquivos = new StringBuilder();
+		String newName = "";
 		if(files != null && files.length > 0) {
-			for(MultipartFile file : files) {
-				if(file != null) {
-					String nomeArquivo = renomearArquivo(file.getOriginalFilename());
-					String newName = path.toAbsolutePath().toString() + getDefault().getSeparator()+nomeArquivo;
-					file.transferTo(new File(newName));
-					redimensionarImagem(newName);
-					nomesArquivos.append(nomeArquivo);
-					nomesArquivos.append("|");
+			if(files[0] != null) {
+				MultipartFile file = files[0];
+				String nomeArquivo = renomearArquivo(file.getOriginalFilename());
+				newName = path.toAbsolutePath().toString() + getDefault().getSeparator()+nomeArquivo;
+				file.transferTo(new File(newName));
+				//redimensionarImagem(newName);
+				try {
+					Thumbnails.of(newName).size(Constantes.MI_IMAGEM_PRODUTO_G_WIDTH, Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT).toFiles(RenameImage.SUFFIX_G);
+					Thumbnails.of(newName).size(Constantes.MI_IMAGEM_PRODUTO_M_WIDTH, Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT).toFiles(RenameImage.SUFFIX_M);
+					Thumbnails.of(newName).size(Constantes.MI_IMAGEM_PRODUTO_P_WIDTH, Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT).toFiles(RenameImage.SUFFIX_P);
+				}catch(Exception e) {
+					logger.error(e.getMessage());
 				}
 			}
 		}
-		String n = nomesArquivos.toString();
-		if(n.length() > 0) {
-			n.substring(0, n.length()-1);
-		}
-		return n;
+		
+		return newName;
 	}
 	
 	private String renomearArquivo(String nomeOriginal) {
@@ -99,27 +98,47 @@ public class ImagemStorageLocal implements ImagemStorage {
 		return novoNome.toString();
 	}
 	
-	private void redimensionarImagem(String absPath) {
+	@SuppressWarnings("unused")
+	private String[] getNomesArquivosRedimensionados(String nomeOriginal) {
+		String nome = "";
+		
 		try {
-			for(String absNewFilePath: getNomesArquivosRedimensionados(absPath)) {
-				ImageInfo origInfo = new ImageInfo(absPath); //load image info
-				MagickImage image = new MagickImage(origInfo); //load image
-				String[] tamanhoImg = absNewFilePath.split("_");
-				String[] tamanhos = tamanhoImg[1].split("X");
-				image = image.scaleImage(Integer.parseInt(tamanhos[0]), Integer.parseInt(tamanhos[1])); //to Scale image
-				image.setFileName(absNewFilePath); //give new location
-				image.writeImage(origInfo); //save
+			if(nomeOriginal != null) {
+				if(nomeOriginal.contains("\\.")) {
+					String[] nm = nomeOriginal.split("\\.");
+					if(nm.length > 2) {
+						nome = nm[nm.length-2];
+					}else {
+						nome = nm[0];
+					}
+				}else {
+					nome = nomeOriginal;
+				}
 			}
-		}catch(MagickException me) {
-			logger.error("Erro ao redimensionar Imagem: "+absPath+"\n"+me.getMessage());
+		}catch(Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return new String[] {
+			"Thumb-"+Constantes.MI_IMAGEM_PRODUTO_G_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT+"_"+nome,
+			"Thumb-"+Constantes.MI_IMAGEM_PRODUTO_M_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT+"_"+nome,
+			"Thumb-"+Constantes.MI_IMAGEM_PRODUTO_P_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT+"_"+nome
+		};
+	}
+	
+	public byte[] exibirTemporaria(String nome) {
+		try {
+			return Files.readAllBytes(diretorioImagensTemporarias.resolve(nome));
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return null;
 		}
 	}
 	
-	private String[] getNomesArquivosRedimensionados(String nomeOriginal) {
-		return new String[] {
-			nomeOriginal+"_"+Constantes.MI_IMAGEM_PRODUTO_G_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT,
-			nomeOriginal+"_"+Constantes.MI_IMAGEM_PRODUTO_M_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT,
-			nomeOriginal+"_"+Constantes.MI_IMAGEM_PRODUTO_P_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT
-		};
+	public Path getDiretorioImagensTemporarias() {
+		if(diretorioImagensTemporarias == null) {
+			diretorioImagensTemporarias = getDefault().getPath(diretorioImagens.toString(), Constantes.MI_PASTA_IMAGENS_TEMPORARIAS);
+		}
+		return diretorioImagensTemporarias;
 	}
 }

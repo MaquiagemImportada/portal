@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http:www.thymeleaf.org"
-	th:replace="~{layout/admin_main :: layout( _ , ~{::link} , ~{::div#breadcrumb} , ~{::body}, ~{::script} )}">
+	th:replace="~{layout/admin_main :: layout( _ , ~{::link} , ~{::div#breadcrumb} , ~{::body}, _ )}">
 	
 	<head>
 		<link rel="stylesheet" href="/vendors/uikit/css/uikit.min.css" />
@@ -95,7 +95,7 @@
 									Adicione as fotos do produto arrastando e soltando aqui ou
 								</span>
 								<div uk-form-custom>
-									<input type="file" multiple>
+									<input type="file" multiple="multiple" />
 									<span class="uk-link">selecione</span>
 								</div>
 							</div>
@@ -113,14 +113,16 @@
 		<section id="javascript-extra">
 			<script src="/vendors/uikit/js/uikit.min.js"></script>
 			<script>
+			
+			var retornoAjax;
 								
 			var bar = document.getElementById('js-progressbar');
 			UIkit.upload('.js-upload', {
 			
 				url: '/upload/imagemProduto',
 				multiple: true,
-				responseType: 'text',
 			
+				/*
 				beforeSend: function () {
 					console.log('beforeSend', arguments);
 				},
@@ -133,22 +135,18 @@
 				error: function () {
 					console.log('error', arguments);
 				},
+				*/
 				complete: function (data) {
-					console.log('complete', arguments);
+					//console.log('complete', arguments);
 					
 					var imagens = $("#imagens").val();
-					if(imagens.lenght > 0){
-						imagens += "|";
-					}
-					imagens += data.responseText;
+					imagens += data.response.nome+"|";
 					
 					$("#imagens").val(imagens);
-					alert(imagens);
-					alert(arguments);
 				},
 				
 				loadStart: function (e) {
-					console.log('loadStart', arguments);
+					//console.log('loadStart', arguments);
 					
 					bar.removeAttribute('hidden');
 					bar.max = e.total;
@@ -156,14 +154,14 @@
 				},
 				
 				progress: function (e) {
-					console.log('progress', arguments);
+					//console.log('progress', arguments);
 					
 					bar.max = e.total;
 					bar.value = e.loaded;
 				},
 				
 				loadEnd: function (e) {
-					console.log('loadEnd', arguments);
+					//console.log('loadEnd', arguments);
 					
 					bar.max = e.total;
 					bar.value = e.loaded;
@@ -172,7 +170,7 @@
 				type: "json",
 				
 				completeAll: function (data) {
-					console.log('completeAll', data);
+					//console.log('completeAll', data);
 					
 					setTimeout(function () {
 						bar.setAttribute('hidden', 'hidden');

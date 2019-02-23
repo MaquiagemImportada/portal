@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.maquiagemimportada.portal.dto.ImagemProdutoDTO;
 import br.com.maquiagemimportada.portal.service.ImagemProdutoService;
 import br.com.maquiagemimportada.portal.storage.ImagemStorage;
 import br.com.maquiagemimportada.portal.storage.ImagemStorageRunnable;
@@ -23,9 +24,9 @@ public class UploadController {
 	private ImagemProdutoService imagemProdutoService;
 	
 	@PostMapping("/imagemProduto")
-	public DeferredResult<String> imagemProduto(@RequestParam("files[]") MultipartFile[] files) {
-		DeferredResult<String> resultado = new DeferredResult<>();
-		System.out.println("======> Pegou upload");
+	public DeferredResult<ImagemProdutoDTO> imagemProduto(@RequestParam("files[]") MultipartFile[] files) {
+		DeferredResult<ImagemProdutoDTO> resultado = new DeferredResult<ImagemProdutoDTO>();
+		
 		Thread thread = new Thread(new ImagemStorageRunnable(files, resultado, imagemStorage, imagemProdutoService));
 		thread.start();
 		
