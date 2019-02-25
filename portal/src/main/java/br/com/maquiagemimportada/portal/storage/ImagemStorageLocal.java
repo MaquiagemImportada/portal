@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.maquiagemimportada.portal.domain.ImagemProduto;
+import br.com.maquiagemimportada.portal.domain.Produto;
 import br.com.maquiagemimportada.portal.util.Constantes;
 import br.com.maquiagemimportada.portal.util.RenameImage;
 import net.coobird.thumbnailator.Thumbnails;
@@ -49,37 +51,29 @@ public class ImagemStorageLocal implements ImagemStorage {
 	}
 
 	@Override
-	public void salvarImagens(MultipartFile[] files) throws IllegalStateException, IOException {
-		logger.debug("Salvando imagens");
-		salvar(files, diretorioImagens);
-	}
-
-	@Override
 	public String salvarImagensTemporarias(MultipartFile[] files) throws IllegalStateException, IOException {
-		logger.debug("Salvando imagens temporarias");
-		return salvar(files, diretorioImagensTemporarias);
-	}
-	
-	private String salvar(MultipartFile[] files, Path path) throws IllegalStateException, IOException {
 		String newName = "";
 		if(files != null && files.length > 0) {
 			if(files[0] != null) {
 				MultipartFile file = files[0];
 				String nomeArquivo = renomearArquivo(file.getOriginalFilename());
-				newName = path.toAbsolutePath().toString() + getDefault().getSeparator()+nomeArquivo;
+				newName = diretorioImagensTemporarias.toAbsolutePath().toString() + getDefault().getSeparator()+nomeArquivo;
 				file.transferTo(new File(newName));
-				//redimensionarImagem(newName);
-				try {
-					Thumbnails.of(newName).size(Constantes.MI_IMAGEM_PRODUTO_G_WIDTH, Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT).toFiles(RenameImage.SUFFIX_G);
-					Thumbnails.of(newName).size(Constantes.MI_IMAGEM_PRODUTO_M_WIDTH, Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT).toFiles(RenameImage.SUFFIX_M);
-					Thumbnails.of(newName).size(Constantes.MI_IMAGEM_PRODUTO_P_WIDTH, Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT).toFiles(RenameImage.SUFFIX_P);
-				}catch(Exception e) {
-					logger.error(e.getMessage());
-				}
+				gerarThumbnails(newName);
 			}
 		}
 		
 		return newName;
+	}
+	
+	private void gerarThumbnails(String nomeArquivo) {
+		try {
+			Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_G_WIDTH, Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT).toFiles(RenameImage.SUFFIX_G);
+			Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_M_WIDTH, Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT).toFiles(RenameImage.SUFFIX_M);
+			Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_P_WIDTH, Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT).toFiles(RenameImage.SUFFIX_P);
+		}catch(Exception e) {
+			logger.error(e.getMessage());
+		}
 	}
 	
 	private String renomearArquivo(String nomeOriginal) {
@@ -127,12 +121,35 @@ public class ImagemStorageLocal implements ImagemStorage {
 	}
 	
 	public byte[] exibirTemporaria(String nome) {
+		byte[] retorno;
 		try {
-			return Files.readAllBytes(diretorioImagensTemporarias.resolve(nome));
+			retorno = Files.readAllBytes(diretorioImagensTemporarias.resolve(nome));
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			return null;
+			retorno = new byte[] {};
 		}
+		
+		return retorno;
+	}
+	
+	/**
+	 * Recebe o nome do arquivo no formato arquivo.jpg e retorna o nome do thumbnail correspondente .
+	 * O tamanho passado como parametro deve ser P, M ou G.
+	 * Caso o tamanho não seja um dos padrões, o tamanho M é usado como default.
+	 * @param nomeArquivo
+	 * @param tamanho
+	 * @return Nome do Thumbnail
+	 */
+	public byte[] exibirThumbTemporario(String nome, String tamanho) {
+		byte[] retorno;
+		try {
+			retorno = Files.readAllBytes(diretorioImagensTemporarias.resolve(getNomeThumb(nome, tamanho)));
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			retorno = new byte[] {};
+		}
+		
+		return retorno;
 	}
 	
 	public Path getDiretorioImagensTemporarias() {
@@ -140,5 +157,56 @@ public class ImagemStorageLocal implements ImagemStorage {
 			diretorioImagensTemporarias = getDefault().getPath(diretorioImagens.toString(), Constantes.MI_PASTA_IMAGENS_TEMPORARIAS);
 		}
 		return diretorioImagensTemporarias;
+	}
+	
+	/**
+	 * Recebe o nome do arquivo no formato arquivo.jpg e retorna o nome do thumbnail correspondente .
+	 * O tamanho passado como parametro deve ser P, M ou G.
+	 * Caso o tamanho não seja um dos padrões, o tamanho M é usado como default.
+	 * @param nomeArquivo
+	 * @param tamanho
+	 * @return Nome do Thumbnail
+	 */
+	private String getNomeThumb(String nomeArquivo, String tamanho) {
+		String retorno = "";
+		
+		if(nomeArquivo != null && nomeArquivo.length() > 0) {
+			try {
+				String[] part = nomeArquivo.split("\\.");
+				if(part.length == 2) {
+					if("G".equals(tamanho)) {
+						retorno = part[0]+"_"+Constantes.MI_IMAGEM_PRODUTO_G_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT+"."+part[1];
+					}else if("P".equals(tamanho)) {
+						retorno = part[0]+"_"+Constantes.MI_IMAGEM_PRODUTO_P_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT+"."+part[1];
+					}else {
+						retorno = part[0]+"_"+Constantes.MI_IMAGEM_PRODUTO_M_WIDTH+"X"+Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT+"."+part[1];
+					}
+				}
+			}catch(Exception e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		return retorno;
+	}
+	
+	public void moverImagensTemporarias(Produto produto) {
+		for(ImagemProduto imagem : produto.getImagens()) {
+			File file = new File(imagem.getCaminho());
+			
+			String newName = diretorioImagens.toAbsolutePath().toString() + getDefault().getSeparator()+file.getName();
+			try {
+				((MultipartFile) file).transferTo(new File(newName));
+				logger.debug("Transferiu o arquivo original");
+				String[] parts = newName.split("\\\\");
+				if(parts != null && parts.length > 0) {
+					((MultipartFile) file).transferTo(new File(getNomeThumb(parts[parts.length - 1], "P")));
+					((MultipartFile) file).transferTo(new File(getNomeThumb(parts[parts.length - 1], "M")));
+					((MultipartFile) file).transferTo(new File(getNomeThumb(parts[parts.length - 1], "G")));
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		}
 	}
 }

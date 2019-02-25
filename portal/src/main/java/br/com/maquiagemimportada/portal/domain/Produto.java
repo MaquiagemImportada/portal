@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -87,6 +88,9 @@ public class Produto implements Serializable{
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "produto")
     private List<AtributoProduto> atributos;
+    
+    @Transient
+    private String imagensTemporarias;
 
 	public Long getId() {
 		return id;
@@ -206,5 +210,13 @@ public class Produto implements Serializable{
 
 	public void setAtributos(List<AtributoProduto> atributos) {
 		this.atributos = atributos;
+	}
+
+	public String getImagensTemporarias() {
+		return imagensTemporarias;
+	}
+
+	public void setImagensTemporarias(String imagensTemporarias) {
+		this.imagensTemporarias = imagensTemporarias;
 	}
 }

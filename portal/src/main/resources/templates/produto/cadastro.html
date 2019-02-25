@@ -17,7 +17,7 @@
 			<div class="container">
 				<div class="row">
 					<form method="post" th:action="@{/produto/novo}" class="col s12" th:object="${produto}">
-						<input type="hidden" id="imagens" name="imagens" value="" />
+						<input type="hidden" id="imagens" th:field="*{imagensTemporarias}" value="" />
 						<div class="row">
 							<div class="input-field">
 								<label for="sku" class="required">SKU</label>
@@ -85,6 +85,12 @@
 						</div>
 					</form>
 				</div>
+				<div class="row" id="row_slider">
+					<div class="slider center">
+						<ul class="slides">
+						</ul>
+					</div>
+				</div>
 				<div class="row">
 					<form>
 						<div class="input-field col s12">
@@ -114,70 +120,100 @@
 			<script src="/vendors/uikit/js/uikit.min.js"></script>
 			<script>
 			
-			var retornoAjax;
+				var retornoAjax;
+				var row_slider = document.getElementById('row_slider');
+									
+				var bar = document.getElementById('js-progressbar');
+				UIkit.upload('.js-upload', {
+				
+					url: '/upload/imagemProduto',
+					multiple: true,
+				
+					/*
+					beforeSend: function () {
+						console.log('beforeSend', arguments);
+					},
+					beforeAll: function () {
+						console.log('beforeAll', arguments);
+					},
+					load: function () {
+						console.log('load', arguments);
+					},
+					error: function () {
+						console.log('error', arguments);
+					},
+					*/
+					complete: function (data) {
+						//console.log('complete', arguments);
+						
+						var imagens = $("#imagens").val();
+						imagens += data.response.nome+",";
+						
+						$("#imagens").val(imagens);
+						
+						try{
+							if(imagens.length > 0){
+								var imgs = imagens.split(",");
+								var slider = $('ul.slides');
+								$(slider).empty();
+								var i;
 								
-			var bar = document.getElementById('js-progressbar');
-			UIkit.upload('.js-upload', {
-			
-				url: '/upload/imagemProduto',
-				multiple: true,
-			
-				/*
-				beforeSend: function () {
-					console.log('beforeSend', arguments);
-				},
-				beforeAll: function () {
-					console.log('beforeAll', arguments);
-				},
-				load: function () {
-					console.log('load', arguments);
-				},
-				error: function () {
-					console.log('error', arguments);
-				},
-				*/
-				complete: function (data) {
-					//console.log('complete', arguments);
+								for(i = 0; i < imgs.length; i++){
+									if(imgs[i] != null && imgs[i] != undefined && imgs[i] != ""){
+										slider.append('<li><img class="responsive-img" src="/imagem/exibir/thumb/'+imgs[i]+'"></li>');
+									}
+								}
+								
+								$('.slider').slider({
+									duration: 200,
+									indicators: true,
+									interval: 6000
+								});
+								row_slider.removeAttribute('hidden', 'hidden');
+							}else{
+								row_slider.setAttribute('hidden', 'hidden');
+							}
+						}catch(e){
+							console.log(e);
+						}
+												
+					},
 					
-					var imagens = $("#imagens").val();
-					imagens += data.response.nome+"|";
+					loadStart: function (e) {
+						//console.log('loadStart', arguments);
+						
+						bar.removeAttribute('hidden');
+						bar.max = e.total;
+						bar.value = e.loaded;
+					},
 					
-					$("#imagens").val(imagens);
-				},
+					progress: function (e) {
+						//console.log('progress', arguments);
+						
+						bar.max = e.total;
+						bar.value = e.loaded;
+					},
+					
+					loadEnd: function (e) {
+						//console.log('loadEnd', arguments);
+						
+						bar.max = e.total;
+						bar.value = e.loaded;
+					},
+					
+					type: "json",
+					
+					completeAll: function (data) {
+						//console.log('completeAll', data);
+						
+						setTimeout(function () {
+							bar.setAttribute('hidden', 'hidden');
+						}, 1000);
+					}
 				
-				loadStart: function (e) {
-					//console.log('loadStart', arguments);
-					
-					bar.removeAttribute('hidden');
-					bar.max = e.total;
-					bar.value = e.loaded;
-				},
+				});
 				
-				progress: function (e) {
-					//console.log('progress', arguments);
-					
-					bar.max = e.total;
-					bar.value = e.loaded;
-				},
-				
-				loadEnd: function (e) {
-					//console.log('loadEnd', arguments);
-					
-					bar.max = e.total;
-					bar.value = e.loaded;
-				},
-				
-				type: "json",
-				
-				completeAll: function (data) {
-					//console.log('completeAll', data);
-					
-					setTimeout(function () {
-						bar.setAttribute('hidden', 'hidden');
-					}, 1000);
-				}
-			
-			});
+				row_slider.setAttribute('hidden', 'hidden');
 			
 			</script>
 		</section>
