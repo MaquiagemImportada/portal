@@ -23,6 +23,11 @@ public class ImagemController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ImagemController.class);
 	
+	/**
+	 * "/exibir/{nome:.*}"
+	 * @param nome
+	 * @param response
+	 */
 	@GetMapping("/exibir/{nome}")
 	public void exibir(@PathVariable String nome, HttpServletResponse response) {
 		byte[] retorno;
@@ -47,8 +52,31 @@ public class ImagemController {
 		}
 	}
 	
-	@GetMapping("/exibir/thumb/{nome}")
-	public void exibirThumb(@PathVariable String nome, HttpServletResponse response) {
+	@GetMapping("/exibir/thumb/{tamanho}/{nome}")
+	public void exibirThumb(@PathVariable String tamanho, @PathVariable String nome, HttpServletResponse response) {
+		byte[] retorno;
+		ImagemStorageLocal storage = new ImagemStorageLocal();
+		try {
+			retorno = storage.exibirThumb(nome, tamanho);
+			if(retorno != null) {
+				logger.debug("O retorno retornou com o tamanho de "+retorno.length);
+			}
+		}catch(Exception e) {
+			logger.error(e.getMessage());
+			retorno = new byte[] {};
+		}
+		
+		InputStream in = new ByteArrayInputStream(retorno);
+	    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+	    try {
+			IOUtils.copy(in, response.getOutputStream());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+	}
+	
+	@GetMapping("/exibir/thumb/temporario/{nome}")
+	public void exibirThumbTemporario(@PathVariable String nome, HttpServletResponse response) {
 		byte[] retorno;
 		ImagemStorageLocal storage = new ImagemStorageLocal();
 		try {

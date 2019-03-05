@@ -14,7 +14,7 @@
 		</div>
 		
 		<div id="body">
-			<div class="container">
+			<!-- div class="container" -->
 				<ul class="tabs" style="margin-top: 15px;">
 					<li class="tab">
 						<a href="#rowProdutos" class="active">Produtos</a>
@@ -25,51 +25,91 @@
 				</ul>
 				<div class="row" id="rowProdutos">
 					<div class="col s12">
-						<div class="card horizontal">
-							<div class="card-image">
-								<img src="/images/amuse_delineador.png" style="height: 150px;">
-							</div>
-							<div class="card-stacked">
-								<div class="card-content">
-									<h5>Nome do Produto</h5>
-									<p>Aqui vai uma pequena descrição do Produto XPTO, falando de suas caracteristicas.</p>
-								</div>
-<!-- 								<div class="card-action"> -->
-<!-- 									<a href="#">This is a link</a> -->
-<!-- 								</div> -->
+						<div class="card">
+							<div class="card-content">
+								<table class="highlight">
+									<thead>
+										<th>&nbsp;</th>
+										<th>Nome</th>
+										<th>Categoria</th>
+										<th>Valor</th>
+									</thead>
+									<tbody>
+										<tr th:each="produto : ${produtos}">
+											<td style="width: 75px;">
+												<div class="slider center">
+													<ul class="slides">
+														<li  th:each="imagem : ${produto.imagens}">
+															<img th:src="@{/imagem/exibir/thumb/M/{nomeArquivo}(nomeArquivo=${imagem.nomeArquivo})}">
+														</li>
+													</ul>
+												</div>
+											</td>
+											<td th:text="${produto.nome}" style="font-weight:bold;">Nome do Produto</td>
+											<td th:text="${produto.categoria.nome}">Categoria</td>
+											<td th:text="|R$ ${produto.valor}|">R$ 20.00</td>
+										</tr>
+									</tbody>
+								</table>
+								<span class="container" th:if="${#lists.isEmpty(produtos)}">Não existem produtos cadastrados</span>
 							</div>
 						</div>
+					</div>
+					<div class="fixed-action-btn">
+						<a class="btn-floating btn-large purple lighten-3" th:href="@{/produto/novo}">
+							<i class="large material-icons">add</i>
+						</a>
 					</div>
 				</div>
 				<div class="row" id="rowCategoriasProduto">
 					<div class="col s12">
-						<div class="card horizontal">
-							<div class="card-image">
-								<img src="/images/amuse_delineador.png" style="height: 150px;">
-							</div>
-							<div class="card-stacked">
-								<div class="card-content">
-									<h5>Nome da Categoria de Produto</h5>
-									<p>Aqui vai uma pequena descrição da Categoria de Produto XPTO, falando de suas características.</p>
-								</div>
-<!-- 								<div class="card-action"> -->
-<!-- 									<a href="#">This is a link</a> -->
-<!-- 								</div> -->
+						<div class="card">
+							<div class="card-content">
+								<table class="highlight">
+									<thead>
+										<th>Nome</th>
+										<th>Descrição</th>
+									</thead>
+									<tbody>
+										<tr th:each="categoria : ${categorias}">
+											<td th:text="${categoria.nome}" style="font-weight:bold;">Nome da Categoria</td>
+											<td th:text="${categoria.descricao}" >Descrição da Categoria</td>
+										</tr>
+									</tbody>
+								</table>
+								<span class="container" th:if="${#lists.isEmpty(categorias)}">Não existem categorias cadastradas</span>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div th:if="${#lists.isEmpty(produtos)}">
-					<div class="col s12">
-						<span class="container">Não existem produtos cadastrados</span>
+					<div class="fixed-action-btn">
+						<a class="btn-floating btn-large purple lighten-3" th:href="@{/categoria/novo}">
+							<i class="large material-icons">add</i>
+						</a>
 					</div>
 				</div>
 			</div>
-			<div class="fixed-action-btn">
-				<a class="btn-floating btn-large purple lighten-3" th:href="@{/produto/novo}">
-					<i class="large material-icons">add</i>
-				</a>
-			</div>
-		</div>
+		<!-- /div -->
+		<section id="javascript-extra">
+			<script>
+				$(function(){
+					$('.slider').slider({
+						duration: 200,
+						indicators: false,
+						interval: 6000,
+						height: 55
+					});
+				});
+			</script>
+			<script th:if="${mensagem}">
+				$(function(){
+					/*<![CDATA[*/
+	
+				    var toastHTML = /*[[${mensagem}]]*/ 'Produto salvo com sucesso!!!';
+					M.toast({html: toastHTML});
+	
+					/*]]>*/
+				});
+			</script>
+		</section>
 	</body>
 </html>

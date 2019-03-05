@@ -12,4 +12,6 @@ public interface ImagemProdutoRepository extends JpaRepository<ImagemProduto, Lo
 
 	public Optional<ImagemProduto> findByCaminho(String caminho);
 	
+	public ImagemProduto findByCaminhoContaining(String caminho);
+	
 }

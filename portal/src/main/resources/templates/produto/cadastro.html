@@ -34,12 +34,15 @@
 								<textarea class="materialize-textarea" id="descricao" th:field="*{descricao}" th:errorclass="invalid"></textarea>
 								<span class="helper-text" data-error="Descrição Inválida" data-success="correto">Descreva as principais caracteísticas do Produto</span>
 							</div>
-							<div class="input-field">
-								<label for="categoria">Categoria</label>
+							<div class="input-field col s4" id="divCategoria">
 								<select id="categoria" th:field="*{categoria}">
-									<option value="" disabled selected>Escolha uma categoria</option>
-									<option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nome}">Categoria</option>
+									<option value="" disabled selected>Escolha a Categoria</option>
+									<option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nome}">Categoria 1</option>
 								</select>
+								<label for="categoria">Categoria</label>
+							</div>
+							<div class="input-field col s2">
+								<a class="btn-floating btn-small waves-effect waves-light purple modal-trigger" href="#modalCategoria"><i class="material-icons">add</i></a>
 							</div>
 							<div class="input-field col s6">
 								<label for="valor" class="required">Valor</label>
@@ -111,6 +114,27 @@
 						</div>
 					</form>
 				</div>
+				<div id="modalCategoria" class="modal">
+					<div class="modal-content">
+						<h4>Inserir Categoria</h4>
+						<form id="formCategoria">
+							<div class="input-field">
+								<label for="nomeCategoria" class="required">Nome</label>
+								<input type="text" id="nomeCategoria" />
+								<span class="helper-text" data-error="Nome Inválido">Informe o Nome da Categoria</span>
+							</div>
+							<div class="input-field">
+								<label for="descricaoCategoria" class="required">Descrição</label>
+								<textarea class="materialize-textarea" id="descricaoCategoria"></textarea>
+								<span class="helper-text" data-error="Descrição Inválida" data-success="correto">Descreva as principais caracteísticas da Categoria</span>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript: salvarCategoria();" class="waves-effect waves-purple btn-flat">OK</a>
+						<a href="#!" class="modal-close waves-effect waves-purple btn-flat">Cancelar</a>
+					</div>
+				</div>
 			</div>
 		</div>
 		
@@ -160,7 +184,7 @@
 								
 								for(i = 0; i < imgs.length; i++){
 									if(imgs[i] != null && imgs[i] != undefined && imgs[i] != ""){
-										slider.append('<li><img class="responsive-img" src="/imagem/exibir/thumb/'+imgs[i]+'"></li>');
+										slider.append('<li><img class="responsive-img" src="/imagem/exibir/thumb/temporario/'+imgs[i]+'"></li>');
 									}
 								}
 								
@@ -214,6 +238,50 @@
 				});
 				
 				row_slider.setAttribute('hidden', 'hidden');
+				$('.modal').modal();
+				
+				function salvarCategoria(){
+					var nome = $("#nomeCategoria").val();
+					var descricao = $("#descricaoCategoria").val();
+					var temErro = false;
+					
+					if(nome == undefined || nome == null || nome == ""){
+						$("#nomeCategoria").addClass("invalid");
+						temErro = true;
+					}
+					
+					if(descricao == undefined || descricao == null || descricao == ""){
+						$("#descricaoCategoria").addClass("invalid");
+						temErro = true;
+					}
+					
+					if(temErro){
+						alert("Erro!!!!");
+					}else{
+						$.ajax({
+							url: '/categoria/salvarModal',
+							method: 'POST',
+							data: {nome: nome, descricao: descricao}
+						}).done(function(data){
+							$("#divCategoria").html(data);
+							
+							var modal = M.Modal.getInstance($(".modal"));
+							modal.close();
+							
+							$('select').formSelect();
+							
+							aviso("Categoria salva!");
+						}).fail(function(){
+							alert("Ocorreu um problema!");
+						});
+					}
+				}
+				
+				function aviso(mensagem){
+					M.toast({html: mensagem});
+				}
+				
+				$('select').formSelect();
 			
 			</script>
 		</section>

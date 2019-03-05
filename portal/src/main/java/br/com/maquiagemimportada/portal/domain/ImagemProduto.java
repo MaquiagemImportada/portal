@@ -1,5 +1,6 @@
 package br.com.maquiagemimportada.portal.domain;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
 
@@ -31,6 +32,11 @@ public class ImagemProduto implements Serializable {
 
 	@ManyToOne
 	private ValorAtributo valorAtributo;
+	
+	public ImagemProduto() {
+		setDataCriacao(Calendar.getInstance());
+		setDataModificacao(Calendar.getInstance());
+	}
 	
 	public Long getId() {
 		return id;
@@ -86,5 +92,13 @@ public class ImagemProduto implements Serializable {
 
 	public void setValorAtributo(ValorAtributo valorAtributo) {
 		this.valorAtributo = valorAtributo;
+	}
+	
+	public String getNomeArquivo() {
+		if(getCaminho() != null) {
+			return new File(getCaminho()).getName();
+		}else {
+			return "";
+		}
 	}
 }

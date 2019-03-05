@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	th:replace="~{layout/admin_main :: layout( _ , ~{::link} , ~{::div#breadcrumb} , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" href="/vendors/uikit/css/uikit.min.css" />
+	</head>
+	
+	<body>
+		<div class="col s12" id="breadcrumb">
+			<a href="javascript: void(0);" th:href="@{/produto}" class="breadcrumb">Produto</a>
+			<a href="javascript: void(0);" class="breadcrumb">Cadastro</a>
+		</div>
+		<div id="body">
+			<div class="container">
+				<div class="row">
+					<form method="post" th:action="@{/categoria/novo}" class="col s12" th:object="${categoria}">
+						<div class="row">
+							<div class="input-field">
+								<label for="nome" class="required">Nome</label>
+								<input type="text" id="nome" th:field="*{nome}" th:errorclass="invalid" />
+								<span class="helper-text" data-error="Nome Inválido" data-success="correto">Informe o Nome do Produto</span>
+							</div>
+							<div class="input-field">
+								<label for="descricao" class="required">Descrição</label>
+								<textarea class="materialize-textarea" id="descricao" th:field="*{descricao}" th:errorclass="invalid"></textarea>
+								<span class="helper-text" data-error="Descrição Inválida" data-success="correto">Descreva as principais caracteísticas do Produto</span>
+							</div>
+							
+							<div class="input-field col s12">
+								<button class="btn waves-effect waves-light" type="submit">
+									Salvar
+									<i class="material-icons right">send</i>
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+		
+		
+		<section id="javascript-extra">
+			
+		</section>
+		
+	</body>
+</html>

@@ -1,5 +1,7 @@
 package br.com.maquiagemimportada.portal.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import br.com.maquiagemimportada.portal.domain.CategoriaProduto;
 import br.com.maquiagemimportada.portal.domain.Produto;
 import br.com.maquiagemimportada.portal.repository.CategoriaProdutoRepository;
 import br.com.maquiagemimportada.portal.repository.ProdutoRepository;
@@ -38,7 +41,19 @@ public class ProdutoController {
 	@GetMapping
 	public ModelAndView listar() {
 		ModelAndView mv = new ModelAndView("produto/listar");
-		mv.addObject("produtos", produtoRepository.findAll());
+		List<Produto> produtos = produtoService.listar();
+		List<CategoriaProduto> categorias = categoriaProdutoRepository.findAll();
+		if(produtos != null) {
+			if(produtos.size() > 0) {
+				logger.info("A lista de produtos veio com "+produtos.size()+" registros!!!!");
+			}else {
+				logger.info("A lista de produtos veio vazia!!!!");
+			}
+		}else {
+			logger.info("A lista de produtos veio nula!!!!");
+		}
+		mv.addObject("produtos", produtos);
+		mv.addObject("categorias", categorias);
 		
 		return mv;
 	}
@@ -46,20 +61,24 @@ public class ProdutoController {
 	@RequestMapping("/novo")
 	public ModelAndView novo(Produto produto) {
 		ModelAndView mv = new ModelAndView("produto/cadastro");
+		mv.addObject("categorias", categoriaProdutoRepository.findAll());
 		
 		return mv;
 	}
 	
 	@RequestMapping(value="/novo", method=RequestMethod.POST)
-	public ModelAndView novo(@Valid Produto produto, BindingResult result, Model model, RedirectAttributes attributes) {
+	public String novo(@Valid Produto produto, BindingResult result, Model model, RedirectAttributes attributes) {
 		try {
 			if(result.hasErrors()) {
 				model.addAttribute("categorias", categoriaProdutoRepository.findAll());
+				StringBuilder erros = new StringBuilder("");
 				for(ObjectError error : result.getAllErrors()) {
 					logger.info(error.getDefaultMessage());
+					erros.append(error.getDefaultMessage()+"<br/>");
 				}
 				
-				return novo(produto);
+				attributes.addAttribute("mensagem",erros.toString());
+				return "produto/cadastro";
 			}
 	
 			produtoService.salvar(produto);
@@ -69,7 +88,8 @@ public class ProdutoController {
 			e.printStackTrace();
 			attributes.addFlashAttribute("mensagem","Ocorreu um erro ao tentar salvar o produto: "+e.getMessage());
 		}
-		return new ModelAndView("produto/listar");
+		//return new ModelAndView("produto/listar");
+		return "redirect:/produto";
 	}
 
 	public ProdutoRepository getProdutoRepository() {

@@ -30,6 +30,18 @@ public class CategoriaProduto implements Serializable {
     private Calendar dataCriacao;
     
     private Calendar dataModificacao;
+    
+    public CategoriaProduto() {
+    	setDataCriacao(Calendar.getInstance());
+    	setDataModificacao(Calendar.getInstance());
+    }
+    
+    public CategoriaProduto(String nome, String descricao) {
+    	setNome(nome);
+    	setDescricao(descricao);
+    	setDataCriacao(Calendar.getInstance());
+    	setDataModificacao(Calendar.getInstance());
+    }
 
     public Long getId() {
         return id;

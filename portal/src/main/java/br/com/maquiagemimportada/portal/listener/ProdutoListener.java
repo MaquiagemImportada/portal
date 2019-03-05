@@ -12,6 +12,6 @@ public class ProdutoListener {
 	@EventListener
 	public void moverImagensProduto(ProdutoImagemSalvarEvent evento) {
 		ImagemStorageLocal isl = new ImagemStorageLocal();
-		isl.moverImagensTemporarias(evento.getProduto());
+		isl.moverImagensTemporarias(evento.getProduto(), evento.getImagemProdutoRepository());
 	}
 }

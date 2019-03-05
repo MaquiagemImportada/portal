@@ -20,6 +20,7 @@
 		<java.version>1.8</java.version>
 		<jmagick.version>6.6.9</jmagick.version>
 		<thumbnailator.version>0.4.8</thumbnailator.version>
+		<commons-io.version>2.6</commons-io.version>
 	</properties>
 
 	<dependencies>
@@ -107,6 +108,14 @@
 			<version>${thumbnailator.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+		
 
 	</dependencies>
 

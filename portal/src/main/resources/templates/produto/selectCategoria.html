@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http:www.thymeleaf.org">
+	<body>
+		<select id="categoria" name="categoria">
+			<option value="" disabled selected>Escolha a Categoria</option>
+			<option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nome}">Categoria 1</option>
+		</select>
+		<label for="categoria">Categoria</label>
+	</body>	
+</html>
