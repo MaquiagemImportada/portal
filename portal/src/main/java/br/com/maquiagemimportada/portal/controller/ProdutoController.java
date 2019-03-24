@@ -2,6 +2,7 @@ package br.com.maquiagemimportada.portal.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -90,6 +92,26 @@ public class ProdutoController {
 		}
 		//return new ModelAndView("produto/listar");
 		return "redirect:/produto";
+	}
+	
+	@GetMapping("/apagar/{id}")
+	public void apagar(@PathVariable Long id, HttpServletResponse response) {
+		try {
+			produtoService.apagar(id);
+			response.setStatus(200);
+		}catch(Exception e) {
+			response.setStatus(500);
+		}
+	}
+	
+	@GetMapping("/editar/{id}")
+	public ModelAndView editar(@PathVariable Long id) {
+		Produto produto = produtoRepository.getOne(id);
+		ModelAndView mv = new ModelAndView("produto/cadastro");
+		mv.addObject("produto",produto);
+		mv.addObject("categorias", categoriaProdutoRepository.findAll());
+		
+		return mv;
 	}
 
 	public ProdutoRepository getProdutoRepository() {

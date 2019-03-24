@@ -33,9 +33,11 @@
 										<th>Nome</th>
 										<th>Categoria</th>
 										<th>Valor</th>
+										<th>&nbsp;</th>
+										<th>&nbsp;</th>
 									</thead>
 									<tbody>
-										<tr th:each="produto : ${produtos}">
+										<tr th:each="produto : ${produtos}" th:id='${"produto_"+produto.id}'>
 											<td style="width: 75px;">
 												<div class="slider center">
 													<ul class="slides">
@@ -48,6 +50,8 @@
 											<td th:text="${produto.nome}" style="font-weight:bold;">Nome do Produto</td>
 											<td th:text="${produto.categoria.nome}">Categoria</td>
 											<td th:text="|R$ ${produto.valor}|">R$ 20.00</td>
+											<td><a th:href="@{/produto/editar/{id}(id=${produto.id})}" ><i class="small material-icons">create</i></a></td>
+											<td><a th:href="|javascript: apagarProduto(${produto.id});|"><i class="small material-icons">delete</i></a></td>
 										</tr>
 									</tbody>
 								</table>
@@ -99,6 +103,17 @@
 						height: 55
 					});
 				});
+				
+				function apagarProduto(id){
+					if(confirm("Deseja realmente apagar este produto?")){
+						$.ajax({
+							url: '/produto/apagar/'+id
+						}).done(function(data){
+							$("#produto_"+id).remove();
+							aviso("Produto removido com sucesso!");
+						});
+					}
+				}
 			</script>
 			<script th:if="${mensagem}">
 				$(function(){

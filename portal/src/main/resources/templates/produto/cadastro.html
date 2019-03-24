@@ -18,7 +18,18 @@
 				<div class="row">
 					<form method="post" th:action="@{/produto/novo}" class="col s12" th:object="${produto}">
 						<input type="hidden" id="imagens" th:field="*{imagensTemporarias}" value="" />
+						<input type="hidden" th:field="*{ativo}" id="ativo" value="true" />
 						<div class="row">
+							<div class="input-field">
+								<div class="switch">
+									<label>
+										Inativo
+										<input id="checkAtivo" checked type="checkbox">
+										<span class="lever"></span>
+										Ativo
+									</label>
+								</div>
+							</div>
 							<div class="input-field">
 								<label for="sku" class="required">SKU</label>
 								<input type="text" id="sku" th:field="*{sku}" th:errorclass="invalid" />
@@ -88,12 +99,11 @@
 						</div>
 					</form>
 				</div>
-				<div class="row" id="row_slider">
-					<div class="slider center">
-						<ul class="slides">
-						</ul>
-					</div>
-				</div>
+
+				<ul class="collection" id="collection">
+					
+				</ul>
+
 				<div class="row">
 					<form>
 						<div class="input-field col s12">
@@ -145,7 +155,6 @@
 			<script>
 			
 				var retornoAjax;
-				var row_slider = document.getElementById('row_slider');
 									
 				var bar = document.getElementById('js-progressbar');
 				UIkit.upload('.js-upload', {
@@ -175,31 +184,7 @@
 						
 						$("#imagens").val(imagens);
 						
-						try{
-							if(imagens.length > 0){
-								var imgs = imagens.split(",");
-								var slider = $('ul.slides');
-								$(slider).empty();
-								var i;
-								
-								for(i = 0; i < imgs.length; i++){
-									if(imgs[i] != null && imgs[i] != undefined && imgs[i] != ""){
-										slider.append('<li><img class="responsive-img" src="/imagem/exibir/thumb/temporario/'+imgs[i]+'"></li>');
-									}
-								}
-								
-								$('.slider').slider({
-									duration: 200,
-									indicators: true,
-									interval: 6000
-								});
-								row_slider.removeAttribute('hidden', 'hidden');
-							}else{
-								row_slider.setAttribute('hidden', 'hidden');
-							}
-						}catch(e){
-							console.log(e);
-						}
+						$("#collection").append('<li class="collection-item avatar" id="'+data.response.nome+'"><img src="/imagem/exibir/thumb/temporario/'+data.response.nome+'" alt=""><span class="title truncate">'+data.response.nome+'</span><a href="javascript: apagarImagemTemporaria(\''+data.response.nome+'\');" class="secondary-content text-red"><i class="material-icons">delete</i></a></li>');
 												
 					},
 					
@@ -237,7 +222,6 @@
 				
 				});
 				
-				row_slider.setAttribute('hidden', 'hidden');
 				$('.modal').modal();
 				
 				function salvarCategoria(){
@@ -272,7 +256,7 @@
 							
 							aviso("Categoria salva!");
 						}).fail(function(){
-							alert("Ocorreu um problema!");
+							alert("Ocorreu um problema ao tentar salvar a categoria!");
 						});
 					}
 				}
@@ -281,7 +265,33 @@
 					M.toast({html: mensagem});
 				}
 				
+				function setarAtivo(){
+					if($("#checkAtivo:checked").length > 0){
+						$("#ativo").val("true");
+					}else{
+						$("#ativo").val("false");
+					}
+				}
+				
+				function apagarImagemTemporaria(imagem){
+					if(confirm("Deseja realmente apagar a imagem?")){
+						$.ajax({
+							url: '/imagem/apagarTemporaria/'+imagem
+						}).done(function(data){
+							$("li[id^='"+imagem.substring(0,imagem.length-4)+"']").remove();
+							aviso("Imagem removida com sucesso!");
+						}).fail(function(){
+							alert("Ocorreu um problema ao tentar apagar a imagem temporária!");
+						});
+					}
+				}
+				
+				function testeApaga(imagem){
+					$("#"+imagem).remove();
+				}
+				
 				$('select').formSelect();
+				$("#checkAtivo").change(function(){setarAtivo()});
 			
 			</script>
 		</section>

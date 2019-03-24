@@ -268,4 +268,26 @@ public class ImagemStorageLocal implements ImagemStorage {
 			logger.error("Produto nulo!!!");
 		}
 	}
+	
+	/**
+	 * Apaga a imagem temporaria e seus thumbs
+	 * @param imagem
+	 * @throws IOException
+	 */
+	public void apagarTemporaria(String imagem) throws IOException {
+		logger.info("Vai apagar as imagens temporarias em disco!");
+		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+imagem));
+		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"P")));
+		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"M")));
+		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"G")));
+		logger.info("Apagou as imagens em disco!");
+	}
+	
+	public String getPastaImagensTemporarias() {
+		return diretorioImagensTemporarias.toAbsolutePath().toString()+getDefault().getSeparator();
+	}
+	
+	public String getPastaImagens() {
+		return diretorioImagens.toAbsolutePath().toString()+getDefault().getSeparator();
+	}
 }

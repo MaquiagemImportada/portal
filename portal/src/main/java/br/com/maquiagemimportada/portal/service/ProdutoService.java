@@ -67,8 +67,23 @@ public class ProdutoService {
 		return retorno;
 	}
 	
+	public List<Produto> listarAtivos(){
+		List<Produto> lista = produtoRepository.findAllByAtivo(true);
+		if(lista != null) {
+			logger.info("======> Quantidade de produtos ativos encontrados: "+lista.size());
+		}else {
+			logger.info("======> A lista de produtos ativos veio nula!!!");
+		}
+		return lista;
+	}
+	
 	public List<Produto> listar(){
 		return produtoRepository.findAll();
+	}
+	
+	public void apagar(Long id) {
+		Produto produto = produtoRepository.getOne(id);
+		produtoRepository.delete(produto);
 	}
 
 	public ProdutoRepository getProdutoRepository() {

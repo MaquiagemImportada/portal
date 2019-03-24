@@ -5,33 +5,34 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-import br.com.maquiagemimportada.portal.repository.ProdutoRepository;
+import br.com.maquiagemimportada.portal.service.ProdutoService;
 
 @Controller
-@RequestMapping("/vitrine")
+@RequestMapping("/")
 public class VitrineController {
 
 private static final Logger logger = LoggerFactory.getLogger(VitrineController.class);
 	
 	@Autowired
-	private ProdutoRepository produtoRepository;
+	private ProdutoService produtoService;
 	
 	@RequestMapping
-	public String listar() {
+	public ModelAndView listar() {
 		logger.info("Listando Produto");
-//		ModelAndView mv = new ModelAndView("index");
-//		mv.addObject("produtos", produtoRepository.findAll());
+		ModelAndView mv = new ModelAndView("index");
+		mv.addObject("produtos", produtoService.listarAtivos());
 		
-		return "index";
+		return mv;
 	}
 
-	public ProdutoRepository getProdutoRepository() {
-		return produtoRepository;
+	public ProdutoService getProdutoService() {
+		return produtoService;
 	}
 
-	public void setProdutoRepository(ProdutoRepository produtoRepository) {
-		this.produtoRepository = produtoRepository;
+	public void setProdutoService(ProdutoService produtoService) {
+		this.produtoService = produtoService;
 	}
 	
 }

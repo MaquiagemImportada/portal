@@ -2,6 +2,7 @@ package br.com.maquiagemimportada.portal.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,10 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Produto implements Serializable{
@@ -89,8 +89,22 @@ public class Produto implements Serializable{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "produto")
     private List<AtributoProduto> atributos;
     
+    private Boolean ativo;
+    
+    private Calendar dataCriacao;
+    
+    private Calendar dataModificacao;
+    
+    private Usuario autor;
+    
     @Transient
     private String imagensTemporarias;
+    
+    public Produto() {
+    	setAtivo(true);
+    	setDataCriacao(Calendar.getInstance());
+    	setDataModificacao(Calendar.getInstance());
+    }
 
 	public Long getId() {
 		return id;
@@ -212,7 +226,53 @@ public class Produto implements Serializable{
 		this.atributos = atributos;
 	}
 
+	public Boolean getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	public Calendar getDataCriacao() {
+		return dataCriacao;
+	}
+
+	public void setDataCriacao(Calendar dataCriacao) {
+		this.dataCriacao = dataCriacao;
+	}
+
+	public Calendar getDataModificacao() {
+		return dataModificacao;
+	}
+
+	public void setDataModificacao(Calendar dataModificacao) {
+		this.dataModificacao = dataModificacao;
+	}
+
+	public Usuario getAutor() {
+		return autor;
+	}
+
+	public void setAutor(Usuario autor) {
+		this.autor = autor;
+	}
+
 	public String getImagensTemporarias() {
+		if(imagensTemporarias == null || "".equals(imagensTemporarias)) {
+			if(getImagens() != null && getImagens().size() > 0) {
+				StringBuilder sb = new StringBuilder("");
+				
+				for(ImagemProduto imagemProduto : getImagens()) {
+					if(imagemProduto != null) {
+						sb.append(imagemProduto.getNomeArquivo()+",");
+					}
+				}
+				
+				setImagensTemporarias(sb.toString());
+			}
+		}
+		
 		return imagensTemporarias;
 	}
 

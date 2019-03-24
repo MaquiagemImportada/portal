@@ -2,7 +2,7 @@
 
 <html lang="pt"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-	<nav class="light-blue lighten-1" role="navigation" th:fragment="navbar">
+	<nav class="purple lighten-3" role="navigation" th:fragment="navbar">
 		<div class="nav-wrapper container">
 			<a id="logo-container" href="#" class="brand-logo">Logo</a>
 			<ul class="right hide-on-med-and-down">
@@ -12,8 +12,22 @@
 			<ul id="nav-mobile" class="sidenav">
 				<li><a href="#">Navbar Link</a></li>
 			</ul>
-			<a href="#" data-target="nav-mobile" class="sidenav-trigger"><i
-				class="material-icons">menu</i></a>
+			<a href="#" data-target="nav-mobile" class="sidenav-trigger">
+				<i class="material-icons">menu</i>
+			</a>
+			<ul id="nav-mobile" class="sidenav">
+				<div class="user-view">
+					<div class="background">
+						<img id="img_logo" alt="Maquiagem Importada" src="/images/Logo_MaquiagemImportada.png">
+					</div>
+				</div>
+				<li><a class="waves-effect" href="javascript: void(0);" th:href="@{/}"><i class="small material-icons">equalizer</i>Dashboard</a></li>
+				<li><div class="divider"></div></li>
+				<li><a class="waves-effect" href="javascript: void(0);" th:href="@{/pedido}"><i class="small material-icons">monetization_on</i>Pedidos</a></li>
+				<li><a class="waves-effect" href="javascript: void(0);" th:href="@{/produto}"><i class="small material-icons">store</i>Produtos</a></li>
+				<li><a class="waves-effect" href="javascript: void(0);" th:href="@{/usuario}"><i class="small material-icons">person</i>Usuários</a></li>
+				<li><a class="waves-effect" href="javascript: void(0);" th:href="@{/configuracao}"><i class="small material-icons">settings</i>Configurações</a></li>
+			</ul>
 		</div>
 	</nav>
 
