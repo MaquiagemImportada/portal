@@ -275,12 +275,17 @@ public class ImagemStorageLocal implements ImagemStorage {
 	 * @throws IOException
 	 */
 	public void apagarTemporaria(String imagem) throws IOException {
-		logger.info("Vai apagar as imagens temporarias em disco!");
 		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+imagem));
 		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"P")));
 		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"M")));
 		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"G")));
-		logger.info("Apagou as imagens em disco!");
+	}
+	
+	public void apagar(String imagem) throws IOException {
+		FileUtils.forceDelete(new File(getPastaImagens()+imagem));
+		FileUtils.forceDelete(new File(getPastaImagens()+getNomeThumb(imagem,"P")));
+		FileUtils.forceDelete(new File(getPastaImagens()+getNomeThumb(imagem,"M")));
+		FileUtils.forceDelete(new File(getPastaImagens()+getNomeThumb(imagem,"G")));
 	}
 	
 	public String getPastaImagensTemporarias() {

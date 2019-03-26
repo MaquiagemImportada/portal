@@ -18,6 +18,7 @@
 				<div class="row">
 					<form method="post" th:action="@{/produto/novo}" class="col s12" th:object="${produto}">
 						<input type="hidden" id="imagens" th:field="*{imagensTemporarias}" value="" />
+						<input type="hidden" th:field="*{id}" />
 						<input type="hidden" th:field="*{ativo}" id="ativo" value="true" />
 						<div class="row">
 							<div class="input-field">
@@ -90,19 +91,39 @@
 								<input type="text" id="quantidadeEstoque" th:field="*{quantidadeEstoque}" th:errorclass="invalid" />
 								<span class="helper-text" data-error="Quantidade em Estoque Inválida" data-success="correto">Informe a Quantidade em Estoque</span>
 							</div>
-							<div class="input-field col s12">
+						</div>
+						
+						<div class="row">
+							<ul class="collection" id="collection">
+								<li class="collection-item avatar" th:each="imagem : ${produto.imagens}" th:id='${"produto_"+imagem.nomeArquivo}'>
+									<img th:src="|/imagem/exibir/thumb/M/${imagem.nomeArquivo}|" alt="">
+									<span class="title truncate" th:text="${imagem.nomeArquivo}">Nome Imagem</span>
+									<a href="|javascript: apagarImagem('${imagem.nomeArquivo}');|" class="secondary-content">
+										<i class="material-icons">delete</i>
+									</a>
+								</li>
+							</ul>
+						</div>
+						
+						<div class="row">
+							<div class="input-field col s4">
+								<a class="waves-effect waves-light btn blue accent-1" th:href="@{/produto/}">Cancelar</a>
+							</div>
+							<div class="input-field col s4">
 								<button class="btn waves-effect waves-light" type="submit">
 									Salvar
 									<i class="material-icons right">send</i>
 								</button>
 							</div>
+							<div class="input-field col s4" th:if="${produto.id != null}">
+								<a class="waves-effect waves-light btn red" th:href="|javascript: if(confirm('Deseja realmente apagar este produto?'))@{/produto/apagar/{id}(id=${produto.id})}}|">
+									Apagar
+									<i class="material-icons right">delete</i>
+								</a>
+							</div>
 						</div>
 					</form>
 				</div>
-
-				<ul class="collection" id="collection">
-					
-				</ul>
 
 				<div class="row">
 					<form>
@@ -124,6 +145,7 @@
 						</div>
 					</form>
 				</div>
+				
 				<div id="modalCategoria" class="modal">
 					<div class="modal-content">
 						<h4>Inserir Categoria</h4>
@@ -281,7 +303,20 @@
 							$("li[id^='"+imagem.substring(0,imagem.length-4)+"']").remove();
 							aviso("Imagem removida com sucesso!");
 						}).fail(function(){
-							alert("Ocorreu um problema ao tentar apagar a imagem temporária!");
+							alert("Ocorreu um problema ao tentar apagar a imagem");
+						});
+					}
+				}
+				
+				function apagarImagem(imagem){
+					if(confirm("Deseja realmente apagar a imagem?")){
+						$.ajax({
+							url: '/imagem/apagar/'+imagem
+						}).done(function(data){
+							$("li[id^='"+imagem.substring(0,imagem.length-4)+"']").remove();
+							aviso("Imagem removida com sucesso!");
+						}).fail(function(){
+							alert("Ocorreu um problema ao tentar apagar a imagem");
 						});
 					}
 				}

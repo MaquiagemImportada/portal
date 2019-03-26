@@ -97,11 +97,14 @@ public class Produto implements Serializable{
     
     private Usuario autor;
     
+    private Boolean deletado;
+    
     @Transient
     private String imagensTemporarias;
     
     public Produto() {
     	setAtivo(true);
+    	setDeletado(false);
     	setDataCriacao(Calendar.getInstance());
     	setDataModificacao(Calendar.getInstance());
     }
@@ -256,6 +259,14 @@ public class Produto implements Serializable{
 
 	public void setAutor(Usuario autor) {
 		this.autor = autor;
+	}
+
+	public Boolean getDeletado() {
+		return deletado;
+	}
+
+	public void setDeletado(Boolean deletado) {
+		this.deletado = deletado;
 	}
 
 	public String getImagensTemporarias() {

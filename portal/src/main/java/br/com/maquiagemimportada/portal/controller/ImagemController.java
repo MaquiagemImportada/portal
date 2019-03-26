@@ -86,9 +86,6 @@ public class ImagemController {
 		ImagemStorageLocal storage = new ImagemStorageLocal();
 		try {
 			retorno = storage.exibirThumbTemporario(nome, "M");
-			if(retorno != null) {
-				logger.debug("O retorno retornou com o tamanho de "+retorno.length);
-			}
 		}catch(Exception e) {
 			logger.error(e.getMessage());
 			retorno = new byte[] {};
@@ -108,11 +105,25 @@ public class ImagemController {
 		try {
 			ImagemStorageLocal storage = new ImagemStorageLocal();
 						
-			logger.info("Vai apagar a imgem no banco");
 			imagemProdutoService.apagar(storage.getPastaImagensTemporarias()+nome);
-			logger.info("Apagou a imagem do banco");
 			
 			storage.apagarTemporaria(nome);
+			
+			response.setStatus(200);
+		}catch(Exception e) {
+			logger.error(e.getMessage());
+			response.setStatus(500);
+		}
+	}
+	
+	@GetMapping("/apagar/{nome}")
+	public void apagar(@PathVariable String nome, HttpServletResponse response) {
+		try {
+			ImagemStorageLocal storage = new ImagemStorageLocal();
+						
+			imagemProdutoService.apagar(storage.getPastaImagens()+nome);
+			
+			storage.apagar(nome);
 			
 			response.setStatus(200);
 		}catch(Exception e) {

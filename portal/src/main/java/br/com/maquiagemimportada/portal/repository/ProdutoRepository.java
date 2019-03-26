@@ -13,4 +13,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long>{
 
 	public Optional<Produto> findBySku(String sku);
 	public List<Produto> findAllByAtivo(boolean ativo);
+	public List<Produto> findAllByAtivoAndDeletado(boolean ativo, boolean deletado);
 }
