@@ -15,9 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.maquiagemimportada.portal.domain.ImagemProduto;
 import br.com.maquiagemimportada.portal.domain.Produto;
-import br.com.maquiagemimportada.portal.repository.ImagemProdutoRepository;
 import br.com.maquiagemimportada.portal.util.Constantes;
 import br.com.maquiagemimportada.portal.util.RenameImage;
 import net.coobird.thumbnailator.Thumbnails;
@@ -27,7 +25,6 @@ public class ImagemStorageLocal implements ImagemStorage {
 	private static final Logger logger = LoggerFactory.getLogger(ImagemStorageLocal.class);
 	
 	private Path diretorioImagens;
-	private Path diretorioImagensTemporarias;
 	
 	public ImagemStorageLocal() {
 		this(getDefault().getPath(Constantes.MI_MEDIA_HOME, Constantes.MI_PASTA_IMAGENS));
@@ -42,41 +39,51 @@ public class ImagemStorageLocal implements ImagemStorage {
 	private void criarPastas() {
 		try {
 			Files.createDirectories(this.diretorioImagens);
-			Files.createDirectories(getDiretorioImagensTemporarias());
-			
-			if(logger.isDebugEnabled()) {
-				logger.debug("Pastas de imagens criadas com sucesso: ");
-				logger.debug(diretorioImagens.toAbsolutePath().toString());
-				logger.debug(diretorioImagensTemporarias.toAbsolutePath().toString());
-			}
 		}catch(IOException ioe) {
 			logger.error("Erro criando pastas de imagens");
 		}
 	}
-
-	@Override
-	public String salvarImagensTemporarias(MultipartFile[] files) throws IllegalStateException, IOException {
-		String newName = "";
-		if(files != null && files.length > 0) {
-			if(files[0] != null) {
-				MultipartFile file = files[0];
-				String nomeArquivo = renomearArquivo(file.getOriginalFilename());
-				newName = diretorioImagensTemporarias.toAbsolutePath().toString() + getDefault().getSeparator()+nomeArquivo;
-				file.transferTo(new File(newName));
-				gerarThumbnails(newName);
-			}
-		}
-		
-		return newName;
-	}
 	
 	private void gerarThumbnails(String nomeArquivo) {
-		try {
-			Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_G_WIDTH, Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT).toFiles(RenameImage.SUFFIX_G);
-			Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_M_WIDTH, Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT).toFiles(RenameImage.SUFFIX_M);
-			Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_P_WIDTH, Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT).toFiles(RenameImage.SUFFIX_P);
-		}catch(Exception e) {
-			logger.error(e.getMessage());
+		
+		if(nomeArquivo != null && !"".equals(nomeArquivo)) {
+			
+			File thumbP = new File(getNomeThumb(nomeArquivo, "P"));
+			if(!thumbP.exists()) {
+				try {
+					Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_P_WIDTH, Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT).toFiles(RenameImage.SUFFIX_P);
+				}catch(Exception e) {
+					logger.error("Erro ao tentar cricar thumb: "+thumbP.getName()+"\n"+e.getMessage());
+				}
+			}
+			
+			File thumbM = new File(getNomeThumb(nomeArquivo, "M"));
+			if(!thumbM.exists()) {
+				try {
+					Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_M_WIDTH, Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT).toFiles(RenameImage.SUFFIX_M);
+				}catch(Exception e) {
+					logger.error("Erro ao tentar cricar thumb: "+thumbP.getName()+"\n"+e.getMessage());
+				}
+			}
+			
+			File thumbG = new File(getNomeThumb(nomeArquivo, "G"));
+			if(!thumbG.exists()) {
+				try {
+					Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_G_WIDTH, Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT).toFiles(RenameImage.SUFFIX_G);
+				}catch(Exception e) {
+					logger.error("Erro ao tentar cricar thumb: "+thumbP.getName()+"\n"+e.getMessage());
+				}
+			}
+		}
+	}
+	
+	public void gerarThumbnails(Produto produto) {
+		if(produto != null && produto.getImagensTemporarias() != null && !"".equals(produto.getImagensTemporarias())) {
+			String[] imgsTmps = produto.getImagensTemporarias().split(",");
+			
+			for(String img : imgsTmps) {
+				gerarThumbnails(img);
+			}
 		}
 	}
 	
@@ -115,6 +122,7 @@ public class ImagemStorageLocal implements ImagemStorage {
 	 * @param nomeOriginal
 	 * @return String[] com os nomes dos arquivos redimensionados
 	 */
+	@SuppressWarnings("unused")
 	private List<String> getNomesArquivosRedimensionados(String nomeOriginal) {
 		List<String> retorno = new ArrayList<String>();
 		
@@ -134,38 +142,6 @@ public class ImagemStorageLocal implements ImagemStorage {
 				logger.error(e.getMessage());
 			}
 		}
-		return retorno;
-	}
-	
-	public byte[] exibirTemporaria(String nome) {
-		byte[] retorno;
-		try {
-			retorno = Files.readAllBytes(diretorioImagensTemporarias.resolve(nome));
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-			retorno = new byte[] {};
-		}
-		
-		return retorno;
-	}
-	
-	/**
-	 * Recebe o nome do arquivo no formato arquivo.jpg e retorna o nome do thumbnail correspondente .
-	 * O tamanho passado como parametro deve ser P, M ou G.
-	 * Caso o tamanho não seja um dos padrões, o tamanho M é usado como default.
-	 * @param nomeArquivo
-	 * @param tamanho
-	 * @return Nome do Thumbnail
-	 */
-	public byte[] exibirThumbTemporario(String nome, String tamanho) {
-		byte[] retorno;
-		try {
-			retorno = Files.readAllBytes(diretorioImagensTemporarias.resolve(getNomeThumb(nome, tamanho)));
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-			retorno = new byte[] {};
-		}
-		
 		return retorno;
 	}
 	
@@ -189,11 +165,16 @@ public class ImagemStorageLocal implements ImagemStorage {
 		return retorno;
 	}
 	
-	public Path getDiretorioImagensTemporarias() {
-		if(diretorioImagensTemporarias == null) {
-			diretorioImagensTemporarias = getDefault().getPath(diretorioImagens.toString(), Constantes.MI_PASTA_IMAGENS_TEMPORARIAS);
+	public byte[] exibir(String nome) {
+		byte[] retorno;
+		try {
+			retorno = Files.readAllBytes(diretorioImagens.resolve(nome));
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			retorno = new byte[] {};
 		}
-		return diretorioImagensTemporarias;
+		
+		return retorno;
 	}
 	
 	/**
@@ -227,69 +208,41 @@ public class ImagemStorageLocal implements ImagemStorage {
 		return retorno;
 	}
 	
-	public void moverImagensTemporarias(Produto produto, ImagemProdutoRepository imagemProdutoRepository) {
-		if(produto != null) {
-			if(produto.getImagensTemporarias() != null && produto.getImagensTemporarias() != null && !"".equals(produto.getImagensTemporarias())) {
-				String[] imagensTemporarias = produto.getImagensTemporarias().split(",");
-								
-				for(String imagemTemporaria : imagensTemporarias) {
-					ImagemProduto imagem = imagemProdutoRepository.findByCaminhoContaining(imagemTemporaria);
-					if(imagem != null) {
-						File file = new File(imagem.getCaminho());
-						String caminhoAntigo = imagem.getCaminho();
-						imagem.setProduto(produto);
-						
-						String newName = diretorioImagens.toAbsolutePath().toString() + getDefault().getSeparator()+file.getName();
-						try {
-							FileUtils.moveFile(file, new File(newName));
-							imagem.setCaminho(newName);
-							imagemProdutoRepository.save(imagem);
-							
-							List<String> nomesArquivosRedimensionados = getNomesArquivosRedimensionados(caminhoAntigo);
-							
-							if(nomesArquivosRedimensionados != null && nomesArquivosRedimensionados.size() > 0) {
-								for(String nomeThumb : nomesArquivosRedimensionados) {
-									File thumb = new File(nomeThumb);
-									String newNameThumb = diretorioImagens.toAbsolutePath().toString() + getDefault().getSeparator()+thumb.getName();
-									FileUtils.moveFile(thumb, new File(newNameThumb));
-								}
-							}else {
-								logger.error("A lista com os nomes dos thumbs voltou vazia!!!");
-							}
-						} catch (Exception e) {
-							logger.error(e.getMessage());
-						}
-					}else {
-						logger.error("Imagem vazia no produto: "+produto.getId()+" - "+produto.getNome());
-					}
-				}
+	@Override
+	public String salvarImagens(MultipartFile[] files) throws IllegalStateException, IOException {
+		String newName = "";
+		if(files != null && files.length > 0) {
+			if(files[0] != null) {
+				MultipartFile file = files[0];
+				String nomeArquivo = renomearArquivo(file.getOriginalFilename());
+				newName = diretorioImagens.toAbsolutePath().toString() + getDefault().getSeparator()+nomeArquivo;
+				file.transferTo(new File(newName));
 			}
-		}else {
-			logger.error("Produto nulo!!!");
 		}
-	}
-	
-	/**
-	 * Apaga a imagem temporaria e seus thumbs
-	 * @param imagem
-	 * @throws IOException
-	 */
-	public void apagarTemporaria(String imagem) throws IOException {
-		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+imagem));
-		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"P")));
-		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"M")));
-		FileUtils.forceDelete(new File(getPastaImagensTemporarias()+getNomeThumb(imagem,"G")));
+		
+		return newName;
 	}
 	
 	public void apagar(String imagem) throws IOException {
 		FileUtils.forceDelete(new File(getPastaImagens()+imagem));
-		FileUtils.forceDelete(new File(getPastaImagens()+getNomeThumb(imagem,"P")));
-		FileUtils.forceDelete(new File(getPastaImagens()+getNomeThumb(imagem,"M")));
-		FileUtils.forceDelete(new File(getPastaImagens()+getNomeThumb(imagem,"G")));
-	}
-	
-	public String getPastaImagensTemporarias() {
-		return diretorioImagensTemporarias.toAbsolutePath().toString()+getDefault().getSeparator();
+		try {
+			File thumbP = new File(getPastaImagens()+getNomeThumb(imagem,"P"));
+			if(thumbP.exists()) {
+				FileUtils.forceDelete(thumbP);
+			}
+			
+			File thumbM = new File(getPastaImagens()+getNomeThumb(imagem,"M"));
+			if(thumbM.exists()) {
+				FileUtils.forceDelete(thumbM);
+			}
+
+			File thumbG = new File(getPastaImagens()+getNomeThumb(imagem,"G"));
+			if(thumbG.exists()) {
+				FileUtils.forceDelete(thumbG);
+			}
+		}catch(Exception e) {
+			logger.error(e.getMessage());
+		}
 	}
 	
 	public String getPastaImagens() {

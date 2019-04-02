@@ -35,7 +35,7 @@ public class ImagemStorageRunnable implements Runnable{
 			if(files != null && files.length > 0) {
 				if(files[0] != null) {
 					ImagemProduto imagem = new ImagemProduto();
-					imagem.setCaminho(imagemStorage.salvarImagensTemporarias(files));
+					imagem.setCaminho(imagemStorage.salvarImagens(files));
 					imagem.setDestaque(false);
 					
 					try {
@@ -44,7 +44,7 @@ public class ImagemStorageRunnable implements Runnable{
 					}catch(Exception e) {
 						logger.error("Erro ao tentar salvar imagem de produto: "+e.getMessage());
 					}
-				}				
+				}
 			}
 			resultado.setResult(img);
 		}catch(Exception e) {

@@ -6,6 +6,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ImagemStorage {
 
-	public String salvarImagensTemporarias(MultipartFile[] files) throws IllegalStateException, IOException;
-	
+	String salvarImagens(MultipartFile[] files) throws IllegalStateException, IOException;
 }

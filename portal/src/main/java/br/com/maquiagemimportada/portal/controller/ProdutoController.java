@@ -90,7 +90,6 @@ public class ProdutoController {
 			e.printStackTrace();
 			attributes.addFlashAttribute("mensagem","Ocorreu um erro ao tentar salvar o produto: "+e.getMessage());
 		}
-		//return new ModelAndView("produto/listar");
 		return "redirect:/produto";
 	}
 	

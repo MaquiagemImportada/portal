@@ -206,7 +206,7 @@
 						
 						$("#imagens").val(imagens);
 						
-						$("#collection").append('<li class="collection-item avatar" id="'+data.response.nome+'"><img src="/imagem/exibir/thumb/temporario/'+data.response.nome+'" alt=""><span class="title truncate">'+data.response.nome+'</span><a href="javascript: apagarImagemTemporaria(\''+data.response.nome+'\');" class="secondary-content text-red"><i class="material-icons">delete</i></a></li>');
+						$("#collection").append('<li class="collection-item avatar" id="'+data.response.nome+'"><img src="/imagem/exibir/'+data.response.nome+'" alt=""><span class="title truncate">'+data.response.nome+'</span><a href="javascript: apagarImagem(\''+data.response.nome+'\');" class="secondary-content text-red"><i class="material-icons">delete</i></a></li>');
 												
 					},
 					
@@ -295,19 +295,6 @@
 					}
 				}
 				
-				function apagarImagemTemporaria(imagem){
-					if(confirm("Deseja realmente apagar a imagem?")){
-						$.ajax({
-							url: '/imagem/apagarTemporaria/'+imagem
-						}).done(function(data){
-							$("li[id^='"+imagem.substring(0,imagem.length-4)+"']").remove();
-							aviso("Imagem removida com sucesso!");
-						}).fail(function(){
-							alert("Ocorreu um problema ao tentar apagar a imagem");
-						});
-					}
-				}
-				
 				function apagarImagem(imagem){
 					if(confirm("Deseja realmente apagar a imagem?")){
 						$.ajax({
@@ -319,10 +306,6 @@
 							alert("Ocorreu um problema ao tentar apagar a imagem");
 						});
 					}
-				}
-				
-				function testeApaga(imagem){
-					$("#"+imagem).remove();
 				}
 				
 				$('select').formSelect();

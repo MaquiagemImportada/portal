@@ -38,7 +38,7 @@ public class ImagemController {
 		byte[] retorno;
 		ImagemStorageLocal storage = new ImagemStorageLocal();
 		try {
-			retorno = storage.exibirTemporaria(nome);
+			retorno = storage.exibir(nome);
 			if(retorno != null) {
 				logger.debug("O retorno retornou com o tamanho de "+retorno.length);
 			}
@@ -77,42 +77,6 @@ public class ImagemController {
 			IOUtils.copy(in, response.getOutputStream());
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-		}
-	}
-	
-	@GetMapping("/exibir/thumb/temporario/{nome}")
-	public void exibirThumbTemporario(@PathVariable String nome, HttpServletResponse response) {
-		byte[] retorno;
-		ImagemStorageLocal storage = new ImagemStorageLocal();
-		try {
-			retorno = storage.exibirThumbTemporario(nome, "M");
-		}catch(Exception e) {
-			logger.error(e.getMessage());
-			retorno = new byte[] {};
-		}
-		
-		InputStream in = new ByteArrayInputStream(retorno);
-	    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-	    try {
-			IOUtils.copy(in, response.getOutputStream());
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-	
-	@GetMapping("/apagarTemporaria/{nome}")
-	public void apagarTemporaria(@PathVariable String nome, HttpServletResponse response) {
-		try {
-			ImagemStorageLocal storage = new ImagemStorageLocal();
-						
-			imagemProdutoService.apagar(storage.getPastaImagensTemporarias()+nome);
-			
-			storage.apagarTemporaria(nome);
-			
-			response.setStatus(200);
-		}catch(Exception e) {
-			logger.error(e.getMessage());
-			response.setStatus(500);
 		}
 	}
 	
