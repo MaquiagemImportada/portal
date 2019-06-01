@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,6 +30,7 @@ public class Produto implements Serializable{
     
     @NotBlank(message="SKU é obrigatório")
     @Size(max=20, message="O SKU deve ter no máximo 20 caracteres")
+    @Column(unique=true)
     private String sku;
 
     @NotBlank(message="Nome é obrigatório")

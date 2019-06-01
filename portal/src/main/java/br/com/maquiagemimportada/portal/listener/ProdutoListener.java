@@ -14,9 +14,11 @@ public class ProdutoListener {
 	public void moverImagensProduto(ProdutoImagemSalvarEvent evento) {
 		ImagemStorageLocal isl = new ImagemStorageLocal();
 		isl.gerarThumbnails(evento.getProduto());
-		for( ImagemProduto ip : evento.getProduto().getImagens()) {
-			ip.setProduto(evento.getProduto());
-			evento.getImagemProdutoRepository().save(ip);
+		if(evento != null && evento.getProduto() != null && evento.getProduto().getImagens() != null && evento.getImagemProdutoRepository() != null) {
+			for( ImagemProduto ip : evento.getProduto().getImagens()) {
+				ip.setProduto(evento.getProduto());
+				evento.getImagemProdutoRepository().save(ip);
+			}
 		}
 	}
 }

@@ -85,7 +85,7 @@ public class ProdutoController {
 	
 			produtoService.salvar(produto);
 			attributes.addFlashAttribute("mensagem","Produto salvo com sucesso!");
-			
+		
 		}catch(Exception e) {
 			e.printStackTrace();
 			attributes.addFlashAttribute("mensagem","Ocorreu um erro ao tentar salvar o produto: "+e.getMessage());

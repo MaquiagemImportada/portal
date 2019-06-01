@@ -48,30 +48,30 @@ public class ImagemStorageLocal implements ImagemStorage {
 		
 		if(nomeArquivo != null && !"".equals(nomeArquivo)) {
 			
-			File thumbP = new File(getNomeThumb(nomeArquivo, "P"));
+			File thumbP = new File(getPastaImagens()+getNomeThumb(nomeArquivo, "P"));
 			if(!thumbP.exists()) {
 				try {
-					Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_P_WIDTH, Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT).toFiles(RenameImage.SUFFIX_P);
+					Thumbnails.of(getPastaImagens()+nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_P_WIDTH, Constantes.MI_IMAGEM_PRODUTO_P_HEIGHT).toFiles(RenameImage.SUFFIX_P);
 				}catch(Exception e) {
 					logger.error("Erro ao tentar cricar thumb: "+thumbP.getName()+"\n"+e.getMessage());
 				}
 			}
 			
-			File thumbM = new File(getNomeThumb(nomeArquivo, "M"));
+			File thumbM = new File(getPastaImagens()+getNomeThumb(nomeArquivo, "M"));
 			if(!thumbM.exists()) {
 				try {
-					Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_M_WIDTH, Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT).toFiles(RenameImage.SUFFIX_M);
+					Thumbnails.of(getPastaImagens()+nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_M_WIDTH, Constantes.MI_IMAGEM_PRODUTO_M_HEIGHT).toFiles(RenameImage.SUFFIX_M);
 				}catch(Exception e) {
-					logger.error("Erro ao tentar cricar thumb: "+thumbP.getName()+"\n"+e.getMessage());
+					logger.error("Erro ao tentar cricar thumb: "+thumbM.getName()+"\n"+e.getMessage());
 				}
 			}
 			
-			File thumbG = new File(getNomeThumb(nomeArquivo, "G"));
+			File thumbG = new File(getPastaImagens()+getNomeThumb(nomeArquivo, "G"));
 			if(!thumbG.exists()) {
 				try {
-					Thumbnails.of(nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_G_WIDTH, Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT).toFiles(RenameImage.SUFFIX_G);
+					Thumbnails.of(getPastaImagens()+nomeArquivo).size(Constantes.MI_IMAGEM_PRODUTO_G_WIDTH, Constantes.MI_IMAGEM_PRODUTO_G_HEIGHT).toFiles(RenameImage.SUFFIX_G);
 				}catch(Exception e) {
-					logger.error("Erro ao tentar cricar thumb: "+thumbP.getName()+"\n"+e.getMessage());
+					logger.error("Erro ao tentar cricar thumb: "+thumbG.getName()+"\n"+e.getMessage());
 				}
 			}
 		}
