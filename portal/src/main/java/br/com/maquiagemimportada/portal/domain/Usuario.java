@@ -5,12 +5,14 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Usuario implements Serializable {
@@ -20,10 +22,17 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @NotBlank(message="Username é obrigatório")
+    @Column(unique=true)
     private String username;
+    
+    @NotBlank(message="Password é obrigatório")
     private String password;
     private Calendar dataCriacao;
     private Calendar dataModificacao;
+    private Boolean ativo;
+    private Boolean deletado;
 
     @OneToOne(optional=false, mappedBy="usuario")
     private PessoaFisica pessoaFisica;
@@ -86,4 +95,20 @@ public class Usuario implements Serializable {
     public void setPerfis(List<PerfilUsuario> perfis) {
         this.perfis = perfis;
     }
+
+	public Boolean getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	public Boolean getDeletado() {
+		return deletado;
+	}
+
+	public void setDeletado(Boolean deletado) {
+		this.deletado = deletado;
+	}
 }

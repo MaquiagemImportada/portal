@@ -292,4 +292,16 @@ public class Produto implements Serializable{
 	public void setImagensTemporarias(String imagensTemporarias) {
 		this.imagensTemporarias = imagensTemporarias;
 	}
+	
+	public BigDecimal getPreco() {
+		BigDecimal retorno;
+		
+		if(valorPromocional != null && valorPromocional.doubleValue() > 0D) {
+			retorno = valorPromocional;
+		}else {
+			retorno = valor;
+		}
+		
+		return retorno;
+	}
 }

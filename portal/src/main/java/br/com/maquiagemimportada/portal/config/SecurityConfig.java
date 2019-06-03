@@ -24,9 +24,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/images/**",
 						"/js/**",
 						"/vendors/**",
-						"/index"
+						"/index",
+						"/vitrine",
+						"/vitrine/**",
+						"/"
 				).permitAll()
-				.anyRequest().authenticated()
+				.antMatchers(
+						"/perfil",
+						"/perfil/**",
+						"/pagamento",
+						"/pagamento/**"
+				).hasRole("USER")
+				.antMatchers(
+						"/produto",
+						"/produto/**",
+						"/categoria",
+						"/categoria/**",
+						"/dashboard",
+						"/pedido",
+						"/pedido/**",
+						"/usuario",
+						"/usuario/**",
+						"/configuracao",
+						"/configuracao/**"
+				).hasRole("ADMIN")
 				.and()
 			.formLogin()
 				.loginPage("/login")
@@ -49,9 +70,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         UserDetails user =
              User.withDefaultPasswordEncoder()
-                .username("user")
+                .username("admin")
                 .password("password")
-                .roles("USER")
+                .roles("USER","ADMIN")
                 .build();
 
         return new InMemoryUserDetailsManager(user);

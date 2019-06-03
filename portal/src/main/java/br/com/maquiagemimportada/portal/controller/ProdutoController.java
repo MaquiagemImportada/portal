@@ -45,15 +45,6 @@ public class ProdutoController {
 		ModelAndView mv = new ModelAndView("produto/listar");
 		List<Produto> produtos = produtoService.listar();
 		List<CategoriaProduto> categorias = categoriaProdutoRepository.findAll();
-		if(produtos != null) {
-			if(produtos.size() > 0) {
-				logger.info("A lista de produtos veio com "+produtos.size()+" registros!!!!");
-			}else {
-				logger.info("A lista de produtos veio vazia!!!!");
-			}
-		}else {
-			logger.info("A lista de produtos veio nula!!!!");
-		}
 		mv.addObject("produtos", produtos);
 		mv.addObject("categorias", categorias);
 		

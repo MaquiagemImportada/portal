@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	th:replace="~{layout/admin_main :: layout( _ , _ , ~{::div#breadcrumb} , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div id="breadcrumb">
+			<a href="javascript: void(0);"class="breadcrumb">Configuração</a>
+		</div>
+		
+		<div id="body">
+			<!-- div class="container" -->
+				<ul class="tabs" style="margin-top: 15px;">
+					<li class="tab">
+						<a href="#rowUsuarios" class="active">Configurações</a>
+					</li>
+				</ul>
+				<div class="row" id="rowUsuarios">
+					<div class="col s12">
+						<div class="card">
+							<div class="card-content">
+								<table class="highlight">
+									<thead>
+										<th>Chave</th>
+										<th>Valor</th>
+										<th>Descrição</th>
+										<th>&nbsp;</th>
+										<th>&nbsp;</th>
+									</thead>
+									<tbody>
+										<tr th:each="configuracao : ${configuracoes}" th:id='${"configuracao_"+configuracao.id}'>
+											<td th:text="${configuracao.chave}" style="font-weight:bold;">Chave</td>
+											<td th:text="${configuracao.valor}">Valor</td>
+											<td th:text="${configuracao.descricao}">Descrição</td>
+											<td><a th:href="@{/configuracao/editar/{id}(id=${configuracao.id})}" ><i class="small material-icons">create</i></a></td>
+											<td><a th:href="|javascript: apagarConfiguracao(${configuracao.id});|"><i class="small material-icons">delete</i></a></td>
+										</tr>
+									</tbody>
+								</table>
+								<span class="container" th:if="${#lists.isEmpty(configuracoes)}">Não existem configurações cadastradas</span>
+							</div>
+						</div>
+					</div>
+					<div class="fixed-action-btn">
+						<a class="btn-floating btn-large purple lighten-3" th:href="@{/configuracao/novo}">
+							<i class="large material-icons">add</i>
+						</a>
+					</div>
+				</div>
+			</div>
+		<!-- /div -->
+		<section id="javascript-extra">
+			<script>
+				function apagarConfiguracao(id){
+					if(confirm("Deseja realmente apagar esta configuração?")){
+						$.ajax({
+							url: '/configuracao/apagar/'+id
+						}).done(function(data){
+							$("#configuracao_"+id).remove();
+							aviso("Configuração removida com sucesso!");
+						});
+					}
+				}
+			</script>
+			<script th:if="${mensagem}">
+				$(function(){
+					/*<![CDATA[*/
+	
+				    var toastHTML = /*[[${mensagem}]]*/ 'Configuração salva com sucesso!!!';
+					M.toast({html: toastHTML});
+	
+					/*]]>*/
+				});
+			</script>
+		</section>
+	</body>
+</html>

@@ -49,7 +49,7 @@
 											</td>
 											<td th:text="${produto.nome}" style="font-weight:bold;">Nome do Produto</td>
 											<td th:text="${produto.categoria?.nome}">Categoria</td>
-											<td th:text="|R$ ${produto.valor}|">R$ 20.00</td>
+											<td th:text="|R$ ${#numbers.formatDecimal(produto.valor, 0, 'POINT', 2, 'COMMA')}|">R$ 20.00</td>
 											<td><a th:href="@{/produto/editar/{id}(id=${produto.id})}" ><i class="small material-icons">create</i></a></td>
 											<td><a th:href="|javascript: apagarProduto(${produto.id});|"><i class="small material-icons">delete</i></a></td>
 										</tr>
