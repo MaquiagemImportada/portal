@@ -1,53 +1,54 @@
 
 package br.com.maquiagemimportada.portal.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import br.com.maquiagemimportada.portal.security.MIUserDetailsService;
 
 @EnableWebSecurity
+@ComponentScan(basePackageClasses = MIUserDetailsService.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	}
+	
+	@Override
+	public void configure(WebSecurity web) {
+		web.ignoring()
+		.antMatchers(
+				"/css/**",
+				"/fonts/**",
+				"/images/**",
+				"/js/**",
+				"/vendors/**",
+				"/index",
+				"/vitrine",
+				"/vitrine/**",
+				"/"
+		);
+	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-				.antMatchers(
-						"/css/**",
-						"/fonts/**",
-						"/images/**",
-						"/js/**",
-						"/vendors/**",
-						"/index",
-						"/vitrine",
-						"/vitrine/**",
-						"/"
-				).permitAll()
-				.antMatchers(
-						"/perfil",
-						"/perfil/**",
-						"/pagamento",
-						"/pagamento/**"
-				).hasRole("USER")
-				.antMatchers(
-						"/produto",
-						"/produto/**",
-						"/categoria",
-						"/categoria/**",
-						"/dashboard",
-						"/pedido",
-						"/pedido/**",
-						"/usuario",
-						"/usuario/**",
-						"/configuracao",
-						"/configuracao/**"
-				).hasRole("ADMIN")
+				.anyRequest().authenticated()
 				.and()
 			.formLogin()
 				.loginPage("/login")
@@ -56,25 +57,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.logout()
 				.permitAll();
 	}
-
-//	@Autowired
-//	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//		auth
-//			.inMemoryAuthentication()
-//				.withUser("user").password("password").roles("USER");
-//	}
 	
-	@SuppressWarnings("deprecation")
 	@Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-             User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("password")
-                .roles("USER","ADMIN")
-                .build();
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-        return new InMemoryUserDetailsManager(user);
-    }
+	public UserDetailsService getUserDetailsService() {
+		return userDetailsService;
+	}
+
+	public void setUserDetailsService(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
 }

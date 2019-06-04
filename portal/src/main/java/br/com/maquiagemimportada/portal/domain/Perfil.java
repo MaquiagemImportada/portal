@@ -23,6 +23,9 @@ public class Perfil implements Serializable {
 
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "perfil")
     private List<PerfilUsuario> usuarios;
+    
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "perfil")
+    private List<Permissao> permissoes;
 
     public Long getId() {
         return id;
@@ -47,4 +50,12 @@ public class Perfil implements Serializable {
     public void setUsuarios(List<PerfilUsuario> usuarios) {
         this.usuarios = usuarios;
     }
+
+	public List<Permissao> getPermissoes() {
+		return permissoes;
+	}
+
+	public void setPermissoes(List<Permissao> permissoes) {
+		this.permissoes = permissoes;
+	}
 }
