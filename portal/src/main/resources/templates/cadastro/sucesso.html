@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	th:replace="~{layout/loja_main :: layout( _ , _ , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12 m6 offset-m3">
+						<div class="card hoverable">
+							<div class="card-content center">
+								<h2 class="purple-text"><i class="medium material-icons">assignment_turned_in</i></h2>
+								<h5 class="center">Quase lá!</h5>
+								<p>Enviamos um email pra você! Por favor, clique no link do email para finalizar o cadastro.</p>
+							</div>
+							<div class="card-action">
+								Ainda não é cadastrado? <a th:href="@{/cadastro}">Cadastre-se</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:if="${param.error}">
+			M.toast({html: 'Usuário e/ou senha inválido(s)'})
+		</script>
+		<script type="text/javascript" th:if="${param.logout}">
+			M.toast({html: 'Logout bem sucedido!'})
+		</script>
+	</body>
+</html>

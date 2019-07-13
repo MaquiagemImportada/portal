@@ -77,6 +77,7 @@ public class ProdutoService {
 		return produtoRepository.findAll();
 	}
 	
+	@Transactional
 	public void apagar(Long id) {
 		Produto produto = produtoRepository.getOne(id);
 		produto.setDeletado(true);

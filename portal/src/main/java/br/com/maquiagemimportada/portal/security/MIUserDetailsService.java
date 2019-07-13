@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import br.com.maquiagemimportada.portal.domain.Usuario;
-import br.com.maquiagemimportada.portal.repository.UsuarioJPARepository;
 import br.com.maquiagemimportada.portal.repository.UsuarioRepository;
 
 @Service
@@ -25,11 +24,9 @@ public class MIUserDetailsService implements UserDetailsService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
-	private UsuarioJPARepository usuarioJPARepository = new UsuarioJPARepository();
-	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Usuario> usuarioOptional = usuarioRepository.findByUsernameAndAtivoAndDeletado(username, true, false);
+		Optional<Usuario> usuarioOptional = usuarioRepository.findByUsernameAndAtivoAndDeletadoAndConfirmado(username, true, false, true);
 		Usuario usuario = usuarioOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha inválidos"));
 		return new User(usuario.getUsername(), usuario.getPassword(), getPermissoes(usuario));
 	}
@@ -37,7 +34,7 @@ public class MIUserDetailsService implements UserDetailsService {
 	private Collection<? extends GrantedAuthority> getPermissoes(Usuario usuario){
 		Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 		
-		List<String> permissoes = usuarioJPARepository.listarPermissoes(usuario);
+		List<String> permissoes = usuarioRepository.listarPermissoesUsuario(usuario.getId());
 		permissoes.forEach(p -> authorities.add(new SimpleGrantedAuthority(p.toUpperCase())));
 		
 		return authorities;

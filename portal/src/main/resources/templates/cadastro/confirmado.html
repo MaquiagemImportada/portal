@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	th:replace="~{layout/loja_main :: layout( _ , _ , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12 m6 offset-m3">
+						<div class="card hoverable">
+							<div class="card-content center">
+								<h2 class="purple-text"><i class="medium material-icons">assignment_turned_in</i></h2>
+								<h5 class="center">Parabéns!</h5>
+								<p>Seu email foi confirmado. Agora você pode entrar com o login e senha cadasstrados.</p>
+							</div>
+							<div class="card-action">
+								<a th:href="@{/login}">LOGIN</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

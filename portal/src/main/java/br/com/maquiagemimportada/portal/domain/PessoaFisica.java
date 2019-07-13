@@ -2,6 +2,8 @@ package br.com.maquiagemimportada.portal.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -107,6 +109,17 @@ public class PessoaFisica implements Serializable {
 
     public void setDataNascimento(Calendar dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+    
+    public void setDataNascimento(String dataNascimento) {
+    	try {
+			DateFormat df = new SimpleDateFormat("dd/MM/YYYY");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(df.parse(dataNascimento));
+			setDataNascimento(cal);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
     }
 
     public List<Endereco> getEnderecos() {

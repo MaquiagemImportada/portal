@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	th:replace="~{layout/loja_main :: layout( _ , _ , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12">
+						<div class="icon-block">
+							<h2 class="center red-text">
+								<i class="material-icons">lock</i>
+							</h2>
+							<h5 class="center">NÃO AUTORIZADO</h5>
+							<p class="center light">
+								Você não tem permissão para acessar esta página.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

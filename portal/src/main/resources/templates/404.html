@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>404</title>
-</head>
-<body>
-	<h1>404</h1>
-</body>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	th:replace="~{layout/loja_main :: layout( _ , _ , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12">
+						<div class="icon-block">
+							<h2 class="center red-text">
+								<i class="material-icons">search</i>
+							</h2>
+							<h5 class="center">NÃO ENCONTRADO</h5>
+							<p class="center light">
+								A página que você tentou acessar não foi encontrada.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

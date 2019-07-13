@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				"/index",
 				"/vitrine",
 				"/vitrine/**",
+				"/cadastro/**",
 				"/"
 		);
 	}
@@ -46,8 +47,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.csrf().disable()
 			.authorizeRequests()
+				.antMatchers("/usuario").hasAuthority("USUARIO_VISUALIZAR")
+				.antMatchers("/usuario/novo/**").hasAuthority("USUARIO_CRIAR")
+				.antMatchers("/usuario/editar/**").hasAuthority("USUARIO_EDITAR")
+				.antMatchers("/usuario/apagar/**").hasAuthority("USUARIO_APAGAR")
+				.antMatchers("/perfil").hasAuthority("PERFIL_VISUALIZAR")
+				.antMatchers("/perfil/novo/**").hasAuthority("PERFIL_CRIAR")
+				.antMatchers("/perfil/editar/**").hasAuthority("PERFIL_EDITAR")
+				.antMatchers("/perfil/apagar/**").hasAuthority("PERFIL_APAGAR")
+				.antMatchers("/permissao").hasAuthority("PERMISSAO_VISUALIZAR")
+				.antMatchers("/permissao/novo/**").hasAuthority("PERMISSAO_CRIAR")
+				.antMatchers("/permissao/editar/**").hasAuthority("PERMISSAO_EDITAR")
+				.antMatchers("/permissao/apagar/**").hasAuthority("PERMISSAO_APAGAR")
+				.antMatchers("/produto").hasAuthority("PRODUTO_VISUALIZAR")
+				.antMatchers("/produto/novo/**").hasAuthority("PRODUTO_CRIAR")
+				.antMatchers("/produto/editar/**").hasAuthority("PRODUTO_EDITAR")
+				.antMatchers("/produto/apagar/**").hasAuthority("PRODUTO_APAGAR")
+				.antMatchers("/categoria").hasAuthority("CATEGORIA_VISUALIZAR")
+				.antMatchers("/categoria/novo/**").hasAuthority("CATEGORIA_CRIAR")
+				.antMatchers("/categoria/editar/**").hasAuthority("CATEGORIA_EDITAR")
+				.antMatchers("/categoria/apagar/**").hasAuthority("CATEGORIA_APAGAR")
+				.antMatchers("/configuracao").hasAuthority("CONFIGURACAO_VISUALIZAR")
+				.antMatchers("/configuracao/novo/**").hasAuthority("CONFIGURACAO_CRIAR")
+				.antMatchers("/configuracao/editar/**").hasAuthority("CONFIGURACAO_EDITAR")
+				.antMatchers("/configuracao/apagar/**").hasAuthority("CONFIGURACAO_APAGAR")
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()

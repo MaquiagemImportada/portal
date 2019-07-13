@@ -29,6 +29,7 @@
 										<th>Chave</th>
 										<th>Valor</th>
 										<th>Descrição</th>
+										<th>Ativo</th>
 										<th>&nbsp;</th>
 										<th>&nbsp;</th>
 									</thead>
@@ -37,6 +38,10 @@
 											<td th:text="${configuracao.chave}" style="font-weight:bold;">Chave</td>
 											<td th:text="${configuracao.valor}">Valor</td>
 											<td th:text="${configuracao.descricao}">Descrição</td>
+											<td>
+												<span class="green-text" th:if="${configuracao.ativo}"><i class="material-icons">check</i></span>
+												<span class="red-text" th:if="${!configuracao.ativo}"><i class="material-icons">clear</i></span>
+											</td>
 											<td><a th:href="@{/configuracao/editar/{id}(id=${configuracao.id})}" ><i class="small material-icons">create</i></a></td>
 											<td><a th:href="|javascript: apagarConfiguracao(${configuracao.id});|"><i class="small material-icons">delete</i></a></td>
 										</tr>

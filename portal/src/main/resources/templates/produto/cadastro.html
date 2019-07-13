@@ -184,10 +184,9 @@
 					url: '/upload/imagemProduto',
 					multiple: true,
 				
+					
+					beforeSend: addCsrfToken,
 					/*
-					beforeSend: function () {
-						console.log('beforeSend', arguments);
-					},
 					beforeAll: function () {
 						console.log('beforeAll', arguments);
 					},
@@ -283,18 +282,6 @@
 					}
 				}
 				
-				function aviso(mensagem){
-					M.toast({html: mensagem});
-				}
-				
-				function setarAtivo(){
-					if($("#checkAtivo:checked").length > 0){
-						$("#ativo").val("true");
-					}else{
-						$("#ativo").val("false");
-					}
-				}
-				
 				function apagarImagem(imagem){
 					if(confirm("Deseja realmente apagar a imagem?")){
 						$.ajax({
@@ -309,7 +296,6 @@
 				}
 				
 				$('select').formSelect();
-				$("#checkAtivo").change(function(){setarAtivo()});
 			
 			</script>
 		</section>

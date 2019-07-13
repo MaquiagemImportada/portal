@@ -36,8 +36,11 @@ public class Configuracao implements Serializable{
 	private Calendar dataModificacao;
 	
 	public Configuracao() {
-		setDataCriacao(Calendar.getInstance());
-		setDataModificacao(Calendar.getInstance());
+		Calendar date = Calendar.getInstance();
+		setAtivo(true);
+		setDeletado(false);
+		setDataCriacao(date);
+		setDataModificacao(date);
 	}
 	
 	public Long getId() {

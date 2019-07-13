@@ -3,23 +3,28 @@ package br.com.maquiagemimportada.portal.domain;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
@@ -29,17 +34,35 @@ public class Usuario implements Serializable {
     
     @NotBlank(message="Password é obrigatório")
     private String password;
+    
+    @NotBlank(message="Email é obrigatório")
+    @Email(message="Email inválido")
+    private String email;
+    
     private Calendar dataCriacao;
     private Calendar dataModificacao;
     private Boolean ativo;
     private Boolean deletado;
+    private String hash;
+    private Boolean confirmado;
 
     @OneToOne(optional=false, mappedBy="usuario")
     private PessoaFisica pessoaFisica;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy = "usuario")
-    private List<PerfilUsuario> perfis;
+    @ManyToMany
+    @JoinTable(name="perfil_usuario", joinColumns=@JoinColumn(name="usuario_id"),inverseJoinColumns = @JoinColumn(name="perfil_id"))
+    private List<Perfil> perfis;
 
+    public Usuario() {
+    	Calendar date = Calendar.getInstance();
+    	setDataCriacao(date);
+    	setDataModificacao(date);
+    	setAtivo(true);
+    	setDeletado(false);
+    	setConfirmado(false);
+    	setHash();
+    }
+    
     public Long getId() {
         return id;
     }
@@ -61,10 +84,19 @@ public class Usuario implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+    	BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    	this.password = bCryptPasswordEncoder.encode(password);
     }
 
-    public Calendar getDataCriacao() {
+    public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Calendar getDataCriacao() {
         return dataCriacao;
     }
 
@@ -88,15 +120,15 @@ public class Usuario implements Serializable {
         this.pessoaFisica = pessoaFisica;
     }
 
-    public List<PerfilUsuario> getPerfis() {
+    public List<Perfil> getPerfis() {
         return perfis;
     }
 
-    public void setPerfis(List<PerfilUsuario> perfis) {
+    public void setPerfis(List<Perfil> perfis) {
         this.perfis = perfis;
     }
 
-	public Boolean getAtivo() {
+	public boolean getAtivo() {
 		return ativo;
 	}
 
@@ -110,5 +142,25 @@ public class Usuario implements Serializable {
 
 	public void setDeletado(Boolean deletado) {
 		this.deletado = deletado;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+	
+	public void setHash() {
+		setHash(UUID.randomUUID().toString());
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	public Boolean getConfirmado() {
+		return confirmado;
+	}
+
+	public void setConfirmado(Boolean confirmado) {
+		this.confirmado = confirmado;
 	}
 }

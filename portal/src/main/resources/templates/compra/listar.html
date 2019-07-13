@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	th:replace="~{layout/admin_main :: layout( _ , _ , ~{::div#breadcrumb} , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div id="breadcrumb">
+			<a href="javascript: void(0);"class="breadcrumb">Compras</a>
+		</div>
+		
+		<div id="body">
+			<!-- div class="container" -->
+				<ul class="tabs" style="margin-top: 15px;">
+					<li class="tab">
+						<a href="#rowCompras" class="active">Compras</a>
+					</li>
+				</ul>
+				<div class="row" id="rowCompras">
+					<div class="col s12">
+						<div class="card">
+							<div class="card-content">
+								<table class="highlight">
+									<thead>
+										<th>Data da Compra</th>
+										<th>Cliente</th>
+										<th>Valor</th>
+										<th>&nbsp;</th>
+									</thead>
+									<tbody>
+										<tr th:each="carrinho : ${carrinhos}" th:id='${"carrinho_"+carrinho.id}'>
+											<td th:text="${#dates.format(carrinho.dataCriacao, 'dd/MM/yyyy HH:mm:ss')}">dd/MM/yyyy HH:mm:ss</td>
+											<td th:text="${carrinho.nomeCliente}" style="font-weight:bold;">Nome do Cliente</td>
+											<td th:text="|R$ ${#numbers.formatDecimal(carrinho.valor, 0, 'POINT', 2, 'COMMA')}|">R$ 20.00</td>
+											<td><a th:href="@{/carrinho/editar/{id}(id=${carrinho.id})}" ><i class="small material-icons">create</i></a></td>
+										</tr>
+									</tbody>
+								</table>
+								<span class="container" th:if="${#lists.isEmpty(carrinhos)}">Não existem compras cadastradas</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- /div -->
+	</body>
+</html>

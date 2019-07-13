@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org">
+	
+	<body>
+		<div class="row" id="rowUsuarios" th:fragment="rowUsuarios">
+			<div class="col s12">
+				<div class="card">
+					<div class="card-content">
+						<table class="highlight">
+							<thead>
+								<th>Username</th>
+								<th>Email</th>
+								<th>Data de Criação</th>
+								<th>Data de Alteração</th>
+								<th>Ativo</th>
+								<th>&nbsp;</th>
+								<th>&nbsp;</th>
+							</thead>
+							<tbody>
+								<tr th:each="usuario : ${usuarios}" th:id='${"usuario_"+usuario.id}'>
+									<td th:text="${usuario.username}" style="font-weight:bold;">Username</td>
+									<td th:text="${usuario.email}">Email</td>
+									<td th:text="${#dates.format(usuario.dataCriacao, 'dd/MM/yyyy HH:mm:ss')}">dd/MM/yyyy HH:mm:ss</td>
+									<td th:text="${#dates.format(usuario.dataModificacao, 'dd/MM/yyyy HH:mm:ss')}">dd/MM/yyyy HH:mm:ss</td>
+									<td>
+										<span class="green-text" th:if="${usuario.ativo}"><i class="material-icons">check</i></span>
+										<span class="red-text" th:if="${!usuario.ativo}"><i class="material-icons">clear</i></span>
+									</td>
+									<td><a th:href="@{/usuario/editar/{id}(id=${usuario.id})}" ><i class="small material-icons">create</i></a></td>
+									<td><a th:href="|javascript: apagarUsuario(${usuario.id});|"><i class="small material-icons">delete</i></a></td>
+								</tr>
+							</tbody>
+						</table>
+						<span class="container" th:if="${#lists.isEmpty(usuarios)}">Não existem usuários cadastrados</span>
+					</div>
+				</div>
+			</div>
+			<div class="fixed-action-btn">
+				<a class="btn-floating btn-large purple lighten-3" th:href="@{/usuario/novo}">
+					<i class="large material-icons">add</i>
+				</a>
+			</div>
+		</div>
+	</body>
+</html>

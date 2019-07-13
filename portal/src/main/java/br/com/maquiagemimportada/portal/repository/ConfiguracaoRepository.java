@@ -11,6 +11,7 @@ import br.com.maquiagemimportada.portal.domain.Configuracao;
 public interface ConfiguracaoRepository extends JpaRepository<Configuracao, Long>{
 
 	public List<Configuracao> findAllByAtivoAndDeletado(Boolean ativo, Boolean deletado);
+	public List<Configuracao> findAllByDeletado(Boolean deletado);
 	public List<Configuracao> findByChave(String chave);
 	
 }

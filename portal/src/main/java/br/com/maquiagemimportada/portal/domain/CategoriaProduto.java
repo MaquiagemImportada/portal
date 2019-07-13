@@ -1,15 +1,16 @@
 package br.com.maquiagemimportada.portal.domain;
 
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class CategoriaProduto implements Serializable {
@@ -20,6 +21,7 @@ public class CategoriaProduto implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @NotBlank(message="Nome é obrigatório")
     private String nome;
     
     private String descricao;

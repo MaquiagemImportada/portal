@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	th:replace="~{layout/admin_main :: layout( _ , ~{::link} , ~{::div#breadcrumb} , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" href="/vendors/uikit/css/uikit.min.css" />
+	</head>
+	
+	<body>
+		<div class="col s12" id="breadcrumb">
+			<a href="javascript: void(0);" th:href="@{/usuario}" class="breadcrumb">Usuário</a>
+			<a href="javascript: void(0);" class="breadcrumb">Perfil</a>
+		</div>
+		<div id="body">
+			<div class="container">
+				<div class="row">
+					<form method="post" th:action="@{/perfil/novo}" class="col s12" th:object="${perfil}">
+						<input type="hidden" th:field="*{id}" />
+						<input type="hidden" th:field="*{ativo}" id="ativo" value="true" />
+						<div class="row">
+							<div class="input-field">
+								<div class="switch">
+									<label>
+										Inativo
+										<input id="checkAtivo" checked type="checkbox">
+										<span class="lever"></span>
+										Ativo
+									</label>
+								</div>
+							</div>
+							<div class="input-field">
+								<label for="nome" class="required">Nome</label>
+								<input type="text" id="nome" th:field="*{nome}" th:errorclass="invalid" />
+								<span class="helper-text" data-error="Nome Inválido" data-success="correto">Informe o Nome</span>
+							</div>
+							<div class="input-field">
+								<label for="descricao" class="required">Descrição</label>
+								<textarea class="materialize-textarea" id="descricao" th:field="*{descricao}" th:errorclass="invalid"></textarea>
+								<span class="helper-text" data-error="Descrição Inválida" data-success="correto">Descreva as principais caracteísticas da Configuração</span>
+							</div>
+						</div>
+						
+						<div class="row">
+							<ul class="collection with-header">
+								<li class="collection-header"><h4>Permissões</h4></li>
+								<th:block th:each="permissao : ${permissoes}">
+									<li class="collection-item">
+										<label>
+											<input type="checkbox" th:value="${permissao.id}" th:field="*{permissoes}" />
+											<span th:text="${permissao.nome}">Permissao</span>
+										</label>
+										<p th:if="${permissao.descricao}" th:text="${permissao.descricao}">Descrição</p>
+									</li>
+								</th:block>
+							</ul>
+						</div>
+						
+						<div class="row">
+							<div class="input-field col s4">
+								<a class="waves-effect waves-light btn blue accent-1" th:href="@{/usuario/}">Cancelar</a>
+							</div>
+							<div class="input-field col s4">
+								<button class="btn waves-effect waves-light" type="submit">
+									Salvar
+									<i class="material-icons right">send</i>
+								</button>
+							</div>
+							<div class="input-field col s4" th:if="${perfil.id != null}">
+								<a class="waves-effect waves-light btn red" th:href="|javascript: if(confirm('Deseja realmente apagar este Perfil?'))@{/perfil/apagar/{id}(id=${perfil.id})}}|">
+									Apagar
+									<i class="material-icons right">delete</i>
+								</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<section id="javascript-extra">
+			<script>
+				$('input[type=hidden]').remove();
+			</script>
+		</section>
+	</body>
+</html>

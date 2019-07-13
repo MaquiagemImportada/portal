@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	th:replace="~{layout/admin_main :: layout( _ , ~{::link} , ~{::div#breadcrumb} , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" href="/vendors/uikit/css/uikit.min.css" />
+	</head>
+	
+	<body>
+		<div class="col s12" id="breadcrumb">
+			<a href="javascript: void(0);" th:href="@{/usuario}" class="breadcrumb">Usuário</a>
+			<a href="javascript: void(0);" class="breadcrumb">Cadastro</a>
+		</div>
+		<div id="body">
+			<div class="container">
+				<div class="row">
+					<form method="post" th:action="@{/usuario/novo}" class="col s12" th:object="${usuario}">
+						<input type="hidden" th:field="*{id}" />
+						<input type="hidden" th:field="*{ativo}" id="ativo" value="true" />
+						<div class="row">
+							<div class="input-field">
+								<div class="switch">
+									<label>
+										Inativo
+										<input id="checkAtivo" checked type="checkbox">
+										<span class="lever"></span>
+										Ativo
+									</label>
+								</div>
+							</div>
+							<div class="input-field">
+								<label for="username" class="required">Nome de Usuario</label>
+								<input type="text" id="username" th:field="*{username}" th:errorclass="invalid" />
+								<span class="helper-text" data-error="Username Inválido" data-success="correto">Informe o Nome de Usuário</span>
+							</div>
+							<div class="input-field">
+								<label for="password" class="required">Senha</label>
+								<input type="text" id="password" th:field="*{password}" th:errorclass="invalid" />
+								<span class="helper-text" data-error="Senha Inválida" data-success="correto">Informe a Senha</span>
+							</div>
+							<div class="input-field">
+								<label for="passwordConfirm" class="required">Confirme a Senha</label>
+								<input type="text" id="passwordConfirm"/>
+								<span class="helper-text" data-error="Senha Inválida" data-success="correto">Confirme a Senha</span>
+							</div>
+							<div class="input-field">
+								<label for="email" class="required">Email</label>
+								<input type="text" id="email" th:field="*{email}" th:errorclass="invalid" />
+								<span class="helper-text" data-error="Email Inválida" data-success="correto">Informe seu Email</span>
+							</div>
+							<div class="input-field col s4" id="divPerfis">
+								<select id="perfil" th:field="*{perfis}" multiple>
+									<option value="" disabled selected>Escolha os Perfis</option>
+									<option th:each="perfil : ${perfis}" th:value="${perfil.id}" th:text="${perfil.nome}">Perfil 1</option>
+								</select>
+								<label for="perfil">Perfis</label>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="input-field col s4">
+								<a class="waves-effect waves-light btn blue accent-1" th:href="@{/usuario/}">Cancelar</a>
+							</div>
+							<div class="input-field col s4">
+								<button class="btn waves-effect waves-light" type="submit">
+									Salvar
+									<i class="material-icons right">send</i>
+								</button>
+							</div>
+							<div class="input-field col s4" th:if="${usuario.id != null}">
+								<a class="waves-effect waves-light btn red" th:href="|javascript: if(confirm('Deseja realmente apagar este usuário?'))@{/usuario/apagar/{id}(id=${usuario.id})}}|">
+									Apagar
+									<i class="material-icons right">delete</i>
+								</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<section id="javascript-extra">
+			<script>
+				$('select').formSelect();
+			</script>
+		</section>
+		
+	</body>
+</html>

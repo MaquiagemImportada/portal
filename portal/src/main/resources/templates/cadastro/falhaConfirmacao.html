@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	th:replace="~{layout/loja_main :: layout( _ , _ , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12 m6 offset-m3">
+						<div class="card hoverable">
+							<div class="card-content center">
+								<h2 class="purple-text"><i class="medium material-icons">assignment_late</i></h2>
+								<h5 class="center">Ops!</h5>
+								<p>O link que você usou provavelmente está expirado e não funciona mais.</p>
+								<p>Informe o email utilizado no cadastro para enviarmos uma nova confirmação:</p>
+								<div>
+									<div class="input-field">
+										<label for="email" class="required">Email</label>
+										<input type="text" id="email" name="email" />
+									</div>
+									<div class="input-field">
+										<button class="btn waves-effect waves-light" id="enviar">
+											Enviar
+											<i class="material-icons right">send</i>
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="card-action">
+								Ainda não é cadastrado? <a th:href="@{/cadastro}">Cadastre-se</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<section id="javascript-extra">
+			<script>
+				$('#enviar').click(function(){
+					$.ajax({
+						method: "POST",
+						url:"/cadastro/reenviarConfirmacao",
+						data: { email: $("#email").val() }
+					}).done(function(){
+						M.toast({html: 'Uma nova confirmação foi enviada para seu email'})
+					});
+				});
+			</script>
+		</section>
+	</body>
+</html>

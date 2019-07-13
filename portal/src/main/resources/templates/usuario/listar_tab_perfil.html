@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org">
+	
+	<body>
+		<div class="row" id="rowPerfis" th:fragment="rowPerfis">
+			<div class="col s12">
+				<div class="card">
+					<div class="card-content">
+						<table class="highlight">
+							<thead>
+								<th>Nome</th>
+								<th>Data de Criação</th>
+								<th>Data de Alteração</th>
+								<th>Ativo</th>
+								<th>&nbsp;</th>
+								<th>&nbsp;</th>
+							</thead>
+							<tbody>
+								<tr th:each="perfil : ${perfis}" th:id='${"perfil_"+perfil.id}'>
+									<td th:text="${perfil.nome}" style="font-weight:bold;">Nome</td>
+									<td th:text="${#dates.format(perfil.dataCriacao, 'dd/MM/yyyy HH:mm:ss')}">dd/MM/yyyy HH:mm:ss</td>
+									<td th:text="${#dates.format(perfil.dataModificacao, 'dd/MM/yyyy HH:mm:ss')}">dd/MM/yyyy HH:mm:ss</td>
+									<td>
+										<span class="green-text" th:if="${perfil.ativo}"><i class="material-icons">check</i></span>
+										<span class="red-text" th:if="${!perfil.ativo}"><i class="material-icons">clear</i></span>
+									</td>
+									<td><a th:href="@{/perfil/editar/{id}(id=${perfil.id})}" ><i class="small material-icons">create</i></a></td>
+									<td><a th:href="|javascript: apagarPerfil(${perfil.id});|"><i class="small material-icons">delete</i></a></td>
+								</tr>
+							</tbody>
+						</table>
+						<span class="container" th:if="${#lists.isEmpty(perfis)}">Não existem perfis cadastrados</span>
+					</div>
+				</div>
+			</div>
+			<div class="fixed-action-btn">
+				<a class="btn-floating btn-large purple lighten-3" th:href="@{/perfil/novo}">
+					<i class="large material-icons">add</i>
+				</a>
+			</div>
+		</div>
+	</body>
+</html>

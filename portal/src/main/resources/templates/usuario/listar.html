@@ -19,39 +19,12 @@
 					<li class="tab">
 						<a href="#rowUsuarios" class="active">Usuários</a>
 					</li>
+					<li class="tab">
+						<a href="#rowPerfis">Perfis</a>
+					</li>
 				</ul>
-				<div class="row" id="rowUsuarios">
-					<div class="col s12">
-						<div class="card">
-							<div class="card-content">
-								<table class="highlight">
-									<thead>
-										<th>Username</th>
-										<th>Data de Criação</th>
-										<th>Data de Alteração</th>
-										<th>&nbsp;</th>
-										<th>&nbsp;</th>
-									</thead>
-									<tbody>
-										<tr th:each="usuario : ${usuarios}" th:id='${"usuario_"+usuario.id}'>
-											<td th:text="${usuario.username}" style="font-weight:bold;">Username</td>
-											<td th:text="${#dates.format(usuario.dataCriacao, 'dd/MM/yyyy HH:mm:ss')}">dd/MM/yyyy HH:mm:ss</td>
-											<td th:text="${#dates.format(usuario.dataModificacao, 'dd/MM/yyyy HH:mm:ss')}">dd/MM/yyyy HH:mm:ss</td>
-											<td><a th:href="@{/usuario/editar/{id}(id=${usuario.id})}" ><i class="small material-icons">create</i></a></td>
-											<td><a th:href="|javascript: apagarUsuario(${usuario.id});|"><i class="small material-icons">delete</i></a></td>
-										</tr>
-									</tbody>
-								</table>
-								<span class="container" th:if="${#lists.isEmpty(usuarios)}">Não existem usuários cadastrados</span>
-							</div>
-						</div>
-					</div>
-					<div class="fixed-action-btn">
-						<a class="btn-floating btn-large purple lighten-3" th:href="@{/usuario/novo}">
-							<i class="large material-icons">add</i>
-						</a>
-					</div>
-				</div>
+				<div th:replace="usuario/listar_tab_usuario :: rowUsuarios"></div>
+				<div th:replace="usuario/listar_tab_perfil :: rowPerfis"></div>
 			</div>
 		<!-- /div -->
 		<section id="javascript-extra">
@@ -63,6 +36,16 @@
 						}).done(function(data){
 							$("#usuario_"+id).remove();
 							aviso("Usuário removido com sucesso!");
+						});
+					}
+				}
+				function apagarPerfil(id){
+					if(confirm("Deseja realmente apagar este perfil?")){
+						$.ajax({
+							url: '/perfil/apagar/'+id
+						}).done(function(data){
+							$("#perfil_"+id).remove();
+							aviso("Perfil removido com sucesso!");
 						});
 					}
 				}

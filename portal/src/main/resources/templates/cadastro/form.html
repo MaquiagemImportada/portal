@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http:www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	th:replace="~{layout/loja_main :: layout( _ , _ , ~{::body}, _ )}">
+	
+	<head>
+		<link rel="stylesheet" />
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12 m6 offset-m3">
+						<div class="card hoverable">
+							<div class="card-content center">
+								<h2 class="center purple-text"><i class="medium material-icons">person_add</i></h2>
+								<h5 class="center">Cadastro</h5>
+								<form th:action="@{/cadastro}" method="post" th:object="${dto}">
+									<input type="hidden" th:field="*{receberOfertas}" id="receberOfertas" value="true" />
+									<div class="input-field">
+										<label for="email" class="required">Email</label>
+										<input type="text" id="email" th:field="*{email}" th:errorclass="invalid" />
+										<span class="helper-text" data-error="Email Inválido" data-success="correto">Informe o Email</span>
+									</div>
+									<div class="input-field">
+										<label for="senha" class="required">Senha</label>
+										<input type="text" id="senha" th:field="*{senha}" th:errorclass="invalid" />
+										<span class="helper-text" data-error="Senha Inválida" data-success="correto">Informe a Senha</span>
+									</div>
+									<div class="input-field">
+										<label for="cpf" class="required">CPF</label>
+										<input type="text" id="cpf" th:field="*{cpf}" th:errorclass="invalid" />
+										<span class="helper-text" data-error="CPF Inválido" data-success="correto">Informe o CPF</span>
+									</div>
+									<div class="input-field">
+										<label for="nome" class="required">Nome</label>
+										<input type="text" id="nome" th:field="*{nome}" th:errorclass="invalid" />
+										<span class="helper-text" data-error="Nome Inválido" data-success="correto">Informe o Nome</span>
+									</div>
+									<div class="input-field">
+										<label for="dataNascimento" class="required">Data de Nascimento</label>
+										<input type="text" id="dataNascimento" th:field="*{dataNascimento}" th:errorclass="invalid" class="datepicker" />
+										<span class="helper-text" data-error="Data de Nascimento Inválida" data-success="correto">Informe a Data de Nascimento</span>
+									</div>
+									<div class="input-field">
+										<label for="telefone" class="required">Telefone</label>
+										<input type="text" id="telefone" th:field="*{telefone}" th:errorclass="invalid" />
+										<span class="helper-text" data-error="Telefone Inválido" data-success="correto">Informe o Telefone</span>
+									</div>
+									<div class="input-field">
+										<span>Receber Ofertas? </span>
+										<div class="switch">
+											<label>
+												Não
+												<input id="checkReceberOfertas" checked type="checkbox">
+												<span class="lever"></span>
+												Sim
+											</label>
+										</div>
+									</div>
+									<div>
+										<button class="btn waves-effect waves-light" type="submit" name="action">
+											Enviar
+											<i class="material-icons right">send</i>
+										</button>
+									</div>
+								</form>
+							</div>
+							<div class="card-action">
+								Já tem cadastro? <a th:href="@{/login}">Login</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" th:if="${param.error}">
+			M.toast({html: 'Usuário e/ou senha inválido(s)'})
+		</script>
+		<script type="text/javascript" th:if="${param.logout}">
+			M.toast({html: 'Logout bem sucedido!'})
+		</script>
+		<script type="text/javascript">
+			$("#checkReceberOfertas").change(function(){
+				if($("#checkReceberOfertas:checked").length > 0){
+					$("#receberOfertas").val("true");
+				}else{
+					$("#receberOfertas").val("false");
+				}
+			});
+		</script>
+	</body>
+</html>
